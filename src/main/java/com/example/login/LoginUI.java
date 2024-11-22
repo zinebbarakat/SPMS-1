@@ -49,6 +49,23 @@ public class LoginUI extends Application {
         loginButton.setStyle("-fx-background-color: #6a4e23; -fx-text-fill: white; -fx-font-size: 14px;");
         loginButton.setOnAction(e -> {
             System.out.println("Login button clicked.");
+            String email = emailField.getText();
+            String password = passwordField.getText();
+
+            if (email.isEmpty() || password.isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Please fill in all fields.");
+                alert.show();
+                return;
+            }
+
+            Auth userDAO = new Auth();
+            if (userDAO.validateUser(email, password)) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Login successful!");
+                alert.show();
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid email or password.");
+                alert.show();
+            }
         });
 
         // Add components to the form container
