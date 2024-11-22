@@ -1,4 +1,4 @@
-package com.example.login;
+package com.spms.login;
 
 import javafx.application.Application;
 import javafx.geometry.Pos;
@@ -24,7 +24,7 @@ public class LoginUI extends Application {
 
         // Title and welcome message
         Label titleLabel = new Label("Smart Plant Monitoring System");
-        titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;");
+        titleLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: white;");
         Label welcomeLabel = new Label("Welcome to our App");
         welcomeLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: white;");
 
@@ -57,8 +57,8 @@ public class LoginUI extends Application {
         // Right side: Image of plant
         VBox imageContainer = new VBox();
         imageContainer.setAlignment(Pos.CENTER);
-        imageContainer.setStyle("-fx-background-color: #f4eccc;");
-        Image plantImage = new Image("file:src/main/resources/com/example/spms/plant.png"); // Adjust the image path as needed
+        imageContainer.setStyle("-fx-background-color: #f2e8ce;");
+        Image plantImage = new Image("file:src/main/resources/com/NLS/spms/plant.png"); // Adjust the image path as needed
         ImageView plantImageView = new ImageView(plantImage);
         plantImageView.setFitHeight(200);
         plantImageView.setPreserveRatio(true);
@@ -82,9 +82,13 @@ public class LoginUI extends Application {
 
         // Create the scene and set it
         Scene scene = new Scene(mainLayout, 800, 400); // Default size, but flexible
-        primaryStage.setTitle("Login UI");
+
+        // Lock the window size and prevent maximizing
+        primaryStage.setTitle("SPMS Login");
         primaryStage.setScene(scene);
-        primaryStage.setResizable(true); // Allow resizing and maximizing
+        primaryStage.setResizable(false); // Prevent resizing and maximizing
+        primaryStage.setWidth(800); // Lock width
+        primaryStage.setHeight(400); // Lock height
         primaryStage.show();
     }
 
@@ -92,3 +96,4 @@ public class LoginUI extends Application {
         launch(args);
     }
 }
+
