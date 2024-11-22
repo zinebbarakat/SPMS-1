@@ -1,8 +1,7 @@
-module com.example.spms {
+module com.example.login {
     requires javafx.controls;
     requires javafx.fxml;
 
-
-    opens com.example.spms to javafx.fxml;
-    exports com.example.spms;
+    opens com.example.login to javafx.fxml;
+    exports com.example.login;
 }
