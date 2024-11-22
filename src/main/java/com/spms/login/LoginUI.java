@@ -10,6 +10,8 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.geometry.Insets;
 
+// Test merge
+
 public class LoginUI extends Application {
 
     @Override
