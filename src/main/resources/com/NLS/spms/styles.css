@@ -1,0 +1,46 @@
+/* Global styles */
+.root {
+    -fx-font-family: 'Segoe UI', sans-serif;
+}
+
+.label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+/* Left panel styling */
+.left-panel {
+    -fx-background-color: #2d7e3f;
+    -fx-padding: 20;
+    -fx-spacing: 20;
+}
+
+.left-panel .title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.left-panel .welcome {
+    -fx-font-size: 16px;
+    -fx-text-fill: white;
+}
+
+.left-panel .button {
+    -fx-background-color: #6e4b3c;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+}
+
+/* Right panel styling */
+.right-panel {
+    -fx-background-color: #f0e0d6;
+    -fx-alignment: center;
+}
+
+/* Plant image styling */
+.right-panel .image-view {
+    -fx-fit-height: 250px;
+    -fx-fit-width: 250px;
+}
+
