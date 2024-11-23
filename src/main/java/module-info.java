@@ -5,4 +5,5 @@ module com.example.login {
 
     opens com.spms.login to javafx.fxml;
     exports com.spms.login;
+    opens com.NLS.spms to javafx.fxml;
 }

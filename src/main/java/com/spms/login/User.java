@@ -1,4 +1,4 @@
-package com.example.login;
+package com.spms.login;
 
 public class User {
     private String email;

@@ -10,8 +10,6 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.geometry.Insets;
 
-// Test merge
-
 public class LoginUI extends Application {
 
     @Override
@@ -48,7 +46,7 @@ public class LoginUI extends Application {
 
         // Login Button
         Button loginButton = new Button("Login");
-        loginButton.setStyle("-fx-background-color: #6a4e23; -fx-text-fill: white; -fx-font-size: 14px;");
+        loginButton.setStyle("-fx-background-color: #684d42; -fx-text-fill: white; -fx-font-size: 14px;");
         loginButton.setOnAction(e -> {
             System.out.println("Login button clicked.");
             String email = emailField.getText();
@@ -88,6 +86,9 @@ public class LoginUI extends Application {
         mainLayout.setAlignment(Pos.CENTER);
         mainLayout.getChildren().addAll(formContainer, imageContainer);
 
+        // Set the background color of the main layout to match the right side
+        mainLayout.setStyle("-fx-background-color: #f2e8ce;");
+
         // Proportional resizing
         HBox.setHgrow(formContainer, Priority.ALWAYS);
         HBox.setHgrow(imageContainer, Priority.ALWAYS);
@@ -115,4 +116,3 @@ public class LoginUI extends Application {
         launch(args);
     }
 }
-
