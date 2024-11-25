@@ -1,0 +1,11 @@
+.button{
+    -fx-background-color: #F2E8CF;
+    -fx-background-radius: 10;
+}
+
+.rightColumn{
+    -fx-background-color: #386641;
+}
+.shadow{
+    -fx-effect: dropShadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 10);
+}
