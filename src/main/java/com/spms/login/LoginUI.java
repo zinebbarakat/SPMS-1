@@ -60,7 +60,7 @@ public class LoginUI extends Application {
                 return;
             }
 
-            Auth userDAO = new Auth();
+            com.example.login.Auth userDAO = new com.example.login.Auth();
             if (userDAO.validateUser(email, password)) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION, "Login successful!");
                 alert.show();
