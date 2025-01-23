@@ -5,6 +5,7 @@ import com.spms.login.User;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -33,5 +34,27 @@ public class Auth {
             }
         }
         return false;
+    }
+
+    public void registerUser(String email, String password, String role) {
+        List<User> users = getUsersFromJSON();
+        if (users == null) {
+            users = new ArrayList<>();
+        }
+
+        User newUser = new User();
+        newUser.setEmail(email);
+        newUser.setPassword(password);
+        newUser.setRole(role);
+
+        users.add(newUser);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            objectMapper.writeValue(new File(JSON_FILE_PATH), users);
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        }
     }
 }
