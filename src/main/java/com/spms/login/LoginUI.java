@@ -68,8 +68,71 @@ public class LoginUI extends Application {
             }
         });
 
+        // Sign Up Link
+        Hyperlink signUpLink = new Hyperlink("Sign Up");
+        signUpLink.setStyle("-fx-text-fill: white; -fx-underline: true;");
+        signUpLink.setOnAction(e -> {
+            Stage registerStage = new Stage();
+            registerStage.setTitle("Register");
+
+            VBox registerContainer = new VBox(15);
+            registerContainer.setAlignment(Pos.CENTER);
+            registerContainer.setPadding(new Insets(20));
+
+            // Role selection
+            Label roleLabel = new Label("Who are you registering as?");
+            ToggleGroup roleGroup = new ToggleGroup();
+            RadioButton userRadio = new RadioButton("User");
+            userRadio.setToggleGroup(roleGroup);
+            RadioButton premiumUserRadio = new RadioButton("Premium User");
+            premiumUserRadio.setToggleGroup(roleGroup);
+            RadioButton adminRadio = new RadioButton("Admin");
+            adminRadio.setToggleGroup(roleGroup);
+
+            HBox roleSelection = new HBox(10, userRadio, premiumUserRadio, adminRadio);
+            roleSelection.setAlignment(Pos.CENTER);
+
+            // Email and password fields
+            Label newEmailLabel = new Label("Email:");
+            TextField newEmailField = new TextField();
+            newEmailField.setPromptText("Enter your email");
+
+            Label newPasswordLabel = new Label("Password:");
+            PasswordField newPasswordField = new PasswordField();
+            newPasswordField.setPromptText("Enter your password");
+
+            // Register button
+            Button registerButton = new Button("Register");
+            registerButton.setStyle("-fx-background-color: #684d42; -fx-text-fill: white; -fx-font-size: 14px;");
+            registerButton.setOnAction(event -> {
+                String selectedRole = roleGroup.getSelectedToggle() != null ? ((RadioButton) roleGroup.getSelectedToggle()).getText() : "";
+                String email = newEmailField.getText();
+                String password = newPasswordField.getText();
+
+                if (selectedRole.isEmpty() || email.isEmpty() || password.isEmpty()) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Please fill in all fields and select a role.");
+                    alert.show();
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Registered successfully as " + selectedRole + "!");
+                    alert.show();
+                    registerStage.close();
+                }
+            });
+
+            registerContainer.getChildren().addAll(roleLabel, roleSelection, newEmailLabel, newEmailField, newPasswordLabel, newPasswordField, registerButton);
+
+            Scene registerScene = new Scene(registerContainer, 400, 300);
+            registerStage.setScene(registerScene);
+            registerStage.show();
+        });
+
+        // HBox for Login and Sign Up
+        HBox loginSignUpContainer = new HBox(10); // Adjust spacing to keep them close
+        loginSignUpContainer.setAlignment(Pos.CENTER_LEFT);
+        loginSignUpContainer.getChildren().addAll(loginButton, signUpLink);
+
         // Add components to the form container
-        formContainer.getChildren().addAll(titleLabel, welcomeLabel, emailLabel, emailField, passwordLabel, passwordField, rememberMeCheckBox, loginButton);
+        formContainer.getChildren().addAll(titleLabel, welcomeLabel, emailLabel, emailField, passwordLabel, passwordField, rememberMeCheckBox, loginSignUpContainer);
 
         // Right side: Image of plant
         VBox imageContainer = new VBox();
