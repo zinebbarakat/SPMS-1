@@ -61,11 +61,9 @@ public class LoginUI extends Application {
 
             Auth userDAO = new Auth();
             if (userDAO.validateUser(email, password)) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Login successful!");
-                alert.show();
 
-
-                DashboardUI dashboard = new DashboardUI(); // Replace with your Dashboard class
+                // Open the Dashboard
+                DashboardUI dashboard = new DashboardUI(); // Create an instance of the DashboardUI class
                 Stage dashboardStage = new Stage();
                 try {
                     dashboard.start(dashboardStage);
@@ -130,6 +128,11 @@ public class LoginUI extends Application {
                 } else {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION, "Registered successfully as " + selectedRole + "!");
                     alert.show();
+
+                    // Register the user
+                    Auth userDAO = new Auth();
+                    userDAO.registerUser(email, password, selectedRole);
+
                     registerStage.close();
                 }
             });
