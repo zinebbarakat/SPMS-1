@@ -1,5 +1,6 @@
 package com.spms.login;
 
+import com.spms.dashboard.DashboardUI;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -19,7 +20,7 @@ public class LoginUI extends Application {
         formContainer.setAlignment(Pos.CENTER_LEFT);
         formContainer.setSpacing(20);
         formContainer.setPadding(new Insets(20));
-        formContainer.setStyle("-fx-background-color: #28a745;");
+        formContainer.setStyle("-fx-background-color: #386641;");
         formContainer.setPrefWidth(350); // Slightly smaller preferred width
 
         // Title and welcome message
@@ -62,6 +63,20 @@ public class LoginUI extends Application {
             if (userDAO.validateUser(email, password)) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION, "Login successful!");
                 alert.show();
+
+
+                DashboardUI dashboard = new DashboardUI(); // Replace with your Dashboard class
+                Stage dashboardStage = new Stage();
+                try {
+                    dashboard.start(dashboardStage);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+                // Close the Login Window
+                ((Stage) loginButton.getScene().getWindow()).close();
+
+
             } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid email or password.");
                 alert.show();

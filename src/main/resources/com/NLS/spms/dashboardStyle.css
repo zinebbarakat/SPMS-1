@@ -1,0 +1,28 @@
+.button{
+    -fx-background-color: #386641;
+    -fx-background-radius: 10;
+    -fx-alignment: LEFT;
+}
+
+.rightColumn{
+    -fx-background-color: #386641;
+}
+.shadow{
+    -fx-effect: dropShadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 10);
+}
+
+.myAccount {
+    -fx-background-color: #F2E8CF;
+    -fx-background-radius: 10;
+}
+
+.selectedButton{
+    -fx-background-color: #6A994E;
+    -fx-background-radius: 10;
+}
+#logoutMenuItem {
+    -fx-text-fill: #F2E8CF; /* Change text color to red */
+    -fx-font-weight: bold; /* Make the text bold */
+    -fx-background-color: #6A994E; /* Change background color */
+    -fx-font-family: "Malgun Gothic";
+}

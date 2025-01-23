@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="620.0" prefWidth="920.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <left>
+            <VBox prefHeight="200.0" prefWidth="300.0" styleClass="rightColumn" stylesheets="@dashboardStyle.css" BorderPane.alignment="CENTER">
+               <children>
+                  <HBox alignment="CENTER" prefHeight="150.0" prefWidth="200.0">
+                     <children>
+                        <Label alignment="CENTER" text="SPMS" textFill="#a7c957" wrapText="true">
+                           <font>
+                              <Font name="Malgun Gothic Bold" size="42.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets right="10.0" />
+                           </HBox.margin>
+                        </Label>
+                        <ImageView fitHeight="150.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@leaves.png" />
+                           </image>
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="10.0" />
+                           </HBox.margin>
+                        </ImageView>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="80.0" prefWidth="300.0" stylesheets="@dashboardStyle.css">
+                     <children>
+                        <ImageView fitHeight="150.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@dashboard.png" />
+                           </image>
+                           <HBox.margin>
+                              <Insets right="7.0" />
+                           </HBox.margin>
+                        </ImageView>
+                        <Button mnemonicParsing="false" prefHeight="42.0" prefWidth="218.0" styleClass="selectedButton" stylesheets="@dashboardStyle.css" text="Dashboard" textFill="#f2e8cf">
+                           <font>
+                              <Font name="Malgun Gothic Bold" size="20.0" />
+                           </font>
+                        </Button>
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <VBox.margin>
+                        <Insets left="10.0" right="10.0" />
+                     </VBox.margin>
+                     <styleClass>
+                        <String fx:value="selectedButton" />
+                        <String fx:value="shadow" />
+                     </styleClass>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="80.0" prefWidth="300.0" stylesheets="@dashboardStyle.css">
+                     <children>
+                        <ImageView fitHeight="150.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@sun.png" />
+                           </image>
+                           <HBox.margin>
+                              <Insets left="7.0" right="5.0" />
+                           </HBox.margin>
+                        </ImageView>
+                        <Button mnemonicParsing="false" prefHeight="42.0" prefWidth="218.0" text="Light" textFill="#f2e8cf">
+                           <font>
+                              <Font name="Malgun Gothic Bold" size="20.0" />
+                           </font>
+                        </Button>
+                     </children>
+                     <VBox.margin>
+                        <Insets left="10.0" right="10.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="80.0" prefWidth="300.0">
+                     <children>
+                        <ImageView fitHeight="150.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@temperature.png" />
+                           </image>
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                        </ImageView>
+                        <Button mnemonicParsing="false" prefHeight="42.0" prefWidth="218.0" text="Temperature" textFill="#f2e8cf">
+                           <font>
+                              <Font name="Malgun Gothic Bold" size="20.0" />
+                           </font>
+                        </Button>
+                     </children>
+                     <VBox.margin>
+                        <Insets left="10.0" right="10.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="80.0" prefWidth="300.0">
+                     <children>
+                        <ImageView fitHeight="150.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@shovel.png" />
+                           </image>
+                           <HBox.margin>
+                              <Insets left="10.0" right="5.0" />
+                           </HBox.margin>
+                        </ImageView>
+                        <Button mnemonicParsing="false" prefHeight="42.0" prefWidth="218.0" stylesheets="@dashboardStyle.css" text="Soil Moisture" textFill="#f2e8cf">
+                           <font>
+                              <Font name="Malgun Gothic Bold" size="20.0" />
+                           </font>
+                        </Button>
+                     </children>
+                     <VBox.margin>
+                        <Insets left="10.0" right="10.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="80.0" prefWidth="300.0">
+                     <children>
+                        <ImageView fitHeight="150.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@settings.png" />
+                           </image>
+                           <HBox.margin>
+                              <Insets left="10.0" right="5.0" />
+                           </HBox.margin>
+                        </ImageView>
+                        <Button mnemonicParsing="false" prefHeight="42.0" prefWidth="218.0" stylesheets="@dashboardStyle.css" text="Settings" textFill="#f2e8cf">
+                           <font>
+                              <Font name="Malgun Gothic Bold" size="20.0" />
+                           </font>
+                        </Button>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="50.0" />
+                     </VBox.margin>
+                  </HBox>
+               </children>
+            </VBox>
+         </left>
+         <center>
+            <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+               <children>
+                  <HBox alignment="CENTER_RIGHT" prefHeight="79.0" prefWidth="620.0">
+                     <children>
+                        <MenuButton contentDisplay="CENTER" mnemonicParsing="false" stylesheets="@dashboardStyle.css" text="My Account" textFill="#dda15e">
+                          <items>
+                            <MenuItem id="logoutMenuItem" mnemonicParsing="false" text="Logout" />
+                          </items>
+                           <font>
+                              <Font name="Malgun Gothic Bold" size="18.0" />
+                           </font>
+                           <styleClass>
+                              <String fx:value="myAccount" />
+                              <String fx:value="shadow" />
+                           </styleClass>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                           <HBox.margin>
+                              <Insets right="20.0" />
+                           </HBox.margin>
+                        </MenuButton>
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="336.0" prefWidth="377.0">
+                     <children>
+                        <HBox prefHeight="336.0" prefWidth="300.0" />
+                        <HBox prefHeight="100.0" prefWidth="300.0" />
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0" />
+               </children>
+            </VBox>
+         </center>
+      </BorderPane>
+   </children>
+</AnchorPane>
