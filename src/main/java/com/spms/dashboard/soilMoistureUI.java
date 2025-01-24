@@ -8,11 +8,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-public class DashboardUI extends Application {
+public class soilMoistureUI extends Application {
 
     public static void main(String[] args) {
         launch(args);
@@ -34,7 +33,7 @@ public class DashboardUI extends Application {
 
         // Left VBox for navigation menu
         VBox leftVBox = new VBox(10);
-        leftVBox.setPrefSize(250,620);
+        leftVBox.setPrefSize(250, 620);
         leftVBox.setStyle("-fx-background-color: #386641;");
         leftVBox.setAlignment(Pos.TOP_CENTER);
 
@@ -51,16 +50,15 @@ public class DashboardUI extends Application {
         logoImage.setFitHeight(60);
         logoContainer.getChildren().addAll(logoImage, titleLabel);
 
-        // Navigation buttons
         VBox navContainer = new VBox(15);
         navContainer.setAlignment(Pos.TOP_LEFT);
         navContainer.setStyle("-fx-padding: 20;");
 
         navContainer.getChildren().addAll(
-                createHighlightedNavButton("Dashboard", "dashboard.png"),
+                createNavButton("Dashboard", "dashboard.png"),
                 createNavButton("Light", "sun.png"),
                 createNavButton("Temperature", "temperature.png"),
-                createNavButton("Soil Moisture", "shovel.png"),
+                createHighlightedNavButton("Soil Moisture", "shovel.png"),
                 createNavButton("Settings", "settings.png")
         );
 
@@ -71,18 +69,14 @@ public class DashboardUI extends Application {
         centerVBox.setAlignment(Pos.TOP_CENTER);
         centerVBox.setStyle("-fx-padding: 20;");
 
-        centerVBox.getChildren().addAll(
-                createInfoCard("Light Level", "OPTIMAL", "#28a745", true),
-                createInfoCard("Soil Moisture", "SATISFACTORY", "#ffcc00", false),
-                createTemperatureCard()
-        );
+        centerVBox.getChildren().add(createSoilMoistureCard());
 
         // Top menu bar
         HBox topMenu = new HBox();
         topMenu.setStyle("-fx-padding: 10 20; -fx-background-color: transparent;");
         topMenu.setAlignment(Pos.CENTER_RIGHT);
 
-        MenuButton myAccountMenu = new MenuButton("My Account"); // add custom name
+        MenuButton myAccountMenu = new MenuButton("My Account");
         myAccountMenu.setFont(new Font("Malgun Gothic Bold", 18));
         myAccountMenu.setStyle("-fx-background-color: #f2e8cf; -fx-text-fill: #dda15e;");
         myAccountMenu.getItems().add(new MenuItem("Logout"));
@@ -99,45 +93,52 @@ public class DashboardUI extends Application {
         // Scene and Stage
         Scene scene = new Scene(anchorPane);
         primaryStage.setScene(scene);
-        primaryStage.setTitle("Dashboard");
+        primaryStage.setTitle("Soil Moisture Dashboard");
         primaryStage.show();
     }
 
-    private VBox createInfoCard(String title, String status, String color, boolean isOptimal) {
-        VBox card = new VBox(10);
-        card.setAlignment(Pos.CENTER);
-        card.setPrefSize(400, 150);
+    private VBox createSoilMoistureCard() {
+        VBox card = new VBox(20);
+        card.setAlignment(Pos.TOP_CENTER);
+        card.setPrefSize(600, 400);
         card.setStyle("-fx-background-color: #fef9e7; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);");
 
-        Label titleLabel = new Label(title);
-        titleLabel.setFont(new Font("Malgun Gothic Bold", 18));
+        // Title
+        Label titleLabel = new Label("Soil Moisture");
+        titleLabel.setFont(new Font("Malgun Gothic Bold", 28));
         titleLabel.setTextFill(Color.web("#a56336"));
 
-        Circle statusIcon = new Circle(20);
-        statusIcon.setFill(Color.web(color));
+        // Current Moisture Label
+        Label currentMoistureLabel = new Label("Current Moisture (%): 40");
+        currentMoistureLabel.setFont(new Font("Malgun Gothic Bold", 18));
+        currentMoistureLabel.setTextFill(Color.web("#000000"));
 
-        Label statusLabel = new Label(status);
-        statusLabel.setFont(new Font("Malgun Gothic Bold", 20));
-        statusLabel.setTextFill(Color.web(color));
+        // Add Image (Soil Moisture Gauge)
+        ImageView moistureImage = new ImageView(new Image(getClass().getResource("/soil.jpg").toExternalForm()));
+        moistureImage.setFitWidth(500);
+        moistureImage.setPreserveRatio(true);
+        moistureImage.setSmooth(true);
 
-        card.getChildren().addAll(titleLabel, statusIcon, statusLabel);
-        return card;
-    }
+        // Simple Moisture Indicator Box
+        VBox indicatorBox = new VBox(20);
+        indicatorBox.setAlignment(Pos.CENTER);
+        indicatorBox.setStyle("-fx-background-color: #f7f6f2; -fx-padding: 30; -fx-border-radius: 10; -fx-background-radius: 10; -fx-border-color: #ccc;");
 
-    private VBox createTemperatureCard() {
-        VBox card = new VBox(10);
-        card.setAlignment(Pos.CENTER);
-        card.setPrefSize(400, 150);
-        card.setStyle("-fx-background-color: #fef9e7; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);");
+        Label dryLabel = new Label("Dry: 10% - 30%");
+        dryLabel.setFont(new Font("Malgun Gothic", 14));
+        dryLabel.setTextFill(Color.web("#8b0000"));
 
-        Label titleLabel = new Label("Temperature");
-        titleLabel.setFont(new Font("Malgun Gothic Bold", 18));
-        titleLabel.setTextFill(Color.web("#a56336"));
+        Label moderateLabel = new Label("Moderate: 40% - 60%");
+        moderateLabel.setFont(new Font("Malgun Gothic", 14));
+        moderateLabel.setTextFill(Color.web("#ffa500"));
 
-        ProgressBar progressBar = new ProgressBar(0.5);
-        progressBar.setStyle("-fx-accent: red;");
+        Label wetLabel = new Label("Wet: 70% - 90%");
+        wetLabel.setFont(new Font("Malgun Gothic", 14));
+        wetLabel.setTextFill(Color.web("#006400"));
 
-        card.getChildren().addAll(titleLabel, progressBar);
+        indicatorBox.getChildren().addAll(dryLabel, moderateLabel, wetLabel);
+
+        card.getChildren().addAll(titleLabel, currentMoistureLabel, moistureImage, indicatorBox);
         return card;
     }
 
