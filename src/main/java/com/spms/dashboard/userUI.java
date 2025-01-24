@@ -1,6 +1,7 @@
 package com.spms.dashboard;
 
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -12,7 +13,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-public class DashboardUI extends Application {
+public class userUI extends Application {
 
     public static void main(String[] args) {
         launch(args);
@@ -34,7 +35,7 @@ public class DashboardUI extends Application {
 
         // Left VBox for navigation menu
         VBox leftVBox = new VBox(10);
-        leftVBox.setPrefSize(250,620);
+        leftVBox.setPrefSize(250, 620);
         leftVBox.setStyle("-fx-background-color: #386641;");
         leftVBox.setAlignment(Pos.TOP_CENTER);
 
@@ -51,7 +52,6 @@ public class DashboardUI extends Application {
         logoImage.setFitHeight(60);
         logoContainer.getChildren().addAll(logoImage, titleLabel);
 
-        // Navigation buttons
         VBox navContainer = new VBox(15);
         navContainer.setAlignment(Pos.TOP_LEFT);
         navContainer.setStyle("-fx-padding: 20;");
@@ -71,18 +71,14 @@ public class DashboardUI extends Application {
         centerVBox.setAlignment(Pos.TOP_CENTER);
         centerVBox.setStyle("-fx-padding: 20;");
 
-        centerVBox.getChildren().addAll(
-                createInfoCard("Light Level", "OPTIMAL", "#28a745", true),
-                createInfoCard("Soil Moisture", "SATISFACTORY", "#ffcc00", false),
-                createTemperatureCard()
-        );
+        centerVBox.getChildren().addAll(createLightLevelCard(), createTemperatureCard());
 
         // Top menu bar
         HBox topMenu = new HBox();
         topMenu.setStyle("-fx-padding: 10 20; -fx-background-color: transparent;");
         topMenu.setAlignment(Pos.CENTER_RIGHT);
 
-        MenuButton myAccountMenu = new MenuButton("My Account"); // add custom name
+        MenuButton myAccountMenu = new MenuButton("My Account");
         myAccountMenu.setFont(new Font("Malgun Gothic Bold", 18));
         myAccountMenu.setStyle("-fx-background-color: #f2e8cf; -fx-text-fill: #dda15e;");
         myAccountMenu.getItems().add(new MenuItem("Logout"));
@@ -99,45 +95,63 @@ public class DashboardUI extends Application {
         // Scene and Stage
         Scene scene = new Scene(anchorPane);
         primaryStage.setScene(scene);
-        primaryStage.setTitle("Dashboard");
+        primaryStage.setTitle("User Dashboard");
         primaryStage.show();
     }
 
-    private VBox createInfoCard(String title, String status, String color, boolean isOptimal) {
-        VBox card = new VBox(10);
+    private VBox createLightLevelCard() {
+        VBox card = new VBox(20);
         card.setAlignment(Pos.CENTER);
         card.setPrefSize(400, 150);
         card.setStyle("-fx-background-color: #fef9e7; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);");
 
-        Label titleLabel = new Label(title);
-        titleLabel.setFont(new Font("Malgun Gothic Bold", 18));
+        Label titleLabel = new Label("Light Level");
+        titleLabel.setFont(new Font("Malgun Gothic Bold", 24));
         titleLabel.setTextFill(Color.web("#a56336"));
 
-        Circle statusIcon = new Circle(20);
-        statusIcon.setFill(Color.web(color));
+        Circle statusCircle = new Circle(30);
+        statusCircle.setFill(Color.web("#28a745"));
 
-        Label statusLabel = new Label(status);
-        statusLabel.setFont(new Font("Malgun Gothic Bold", 20));
-        statusLabel.setTextFill(Color.web(color));
+        Label statusLabel = new Label("OPTIMAL");
+        statusLabel.setFont(new Font("Malgun Gothic Bold", 18));
+        statusLabel.setTextFill(Color.web("#28a745"));
 
-        card.getChildren().addAll(titleLabel, statusIcon, statusLabel);
+        card.getChildren().addAll(titleLabel, statusCircle, statusLabel);
         return card;
     }
 
     private VBox createTemperatureCard() {
-        VBox card = new VBox(10);
+        VBox card = new VBox(20);
         card.setAlignment(Pos.CENTER);
         card.setPrefSize(400, 150);
         card.setStyle("-fx-background-color: #fef9e7; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);");
 
         Label titleLabel = new Label("Temperature");
-        titleLabel.setFont(new Font("Malgun Gothic Bold", 18));
+        titleLabel.setFont(new Font("Malgun Gothic Bold", 24));
         titleLabel.setTextFill(Color.web("#a56336"));
 
-        ProgressBar progressBar = new ProgressBar(0.5);
-        progressBar.setStyle("-fx-accent: red;");
+        ProgressBar tempBar = new ProgressBar(0.5);
+        tempBar.setPrefWidth(300);
+        tempBar.setPrefHeight(30); // Thicker progress bar
+        tempBar.setStyle("-fx-accent: red;");
 
-        card.getChildren().addAll(titleLabel, progressBar);
+        HBox tempLabels = new HBox(50);
+        tempLabels.setAlignment(Pos.CENTER);
+        Label coldLabel = new Label("COLD");
+        coldLabel.setFont(new Font("Malgun Gothic Bold", 14));
+        coldLabel.setTextFill(Color.web("#8b0000"));
+
+        Label warmLabel = new Label("WARM");
+        warmLabel.setFont(new Font("Malgun Gothic Bold", 14));
+        warmLabel.setTextFill(Color.web("#ffa500"));
+
+        Label hotLabel = new Label("HOT");
+        hotLabel.setFont(new Font("Malgun Gothic Bold", 14));
+        hotLabel.setTextFill(Color.web("#ff4500"));
+
+        tempLabels.getChildren().addAll(coldLabel, warmLabel, hotLabel);
+
+        card.getChildren().addAll(titleLabel, tempBar, tempLabels);
         return card;
     }
 

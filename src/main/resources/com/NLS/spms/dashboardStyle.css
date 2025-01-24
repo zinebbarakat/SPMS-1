@@ -26,3 +26,20 @@
     -fx-background-color: #6A994E; /* Change background color */
     -fx-font-family: "Malgun Gothic";
 }
+
+#info {
+    -fx-background-color: #F2E8CF;
+    -fx-background-radius: 10;
+}
+
+.progress-bar .track {
+    -fx-background-radius: 0;
+    -fx-background-insets: 0px;
+}
+
+.progress-bar .bar {
+    -fx-background-color: red;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0px;
+    -fx-pref-height: 5px;
+}
