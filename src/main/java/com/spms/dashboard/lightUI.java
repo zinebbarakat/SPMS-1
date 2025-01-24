@@ -57,11 +57,11 @@ public class lightUI extends Application {
         navButtons.setAlignment(Pos.TOP_LEFT);
 
         navButtons.getChildren().addAll(
-                createNavButton("Dashboard", "dashboard.png"),
+                createNavButton("Dashboard", "dashboard.png", DashboardLogic::openDashboard),
                 createHighlightedNavButton("Light", "sun.png"), // Highlighted "Light"
-                createNavButton("Temperature", "temperature.png"),
-                createNavButton("Soil Moisture", "shovel.png"),
-                createNavButton("Settings", "settings.png")
+                createNavButton("Temperature", "temperature.png", DashboardLogic::clickTempButton),
+                createNavButton("Soil Moisture", "shovel.png", DashboardLogic::clickSoilButton),
+                createNavButton("Settings", "settings.png", null)
         );
 
         navigationMenu.getChildren().addAll(logoContainer, navButtons);
@@ -152,7 +152,7 @@ public class lightUI extends Application {
         return card;
     }
 
-    private HBox createNavButton(String text, String iconPath) {
+    private HBox createNavButton(String text, String iconPath, Runnable onClickAction) {
         HBox hBox = new HBox(10);
         hBox.setAlignment(Pos.CENTER_LEFT);
         hBox.setStyle("-fx-padding: 10; -fx-background-color: #386641; -fx-background-radius: 5;");
@@ -166,6 +166,8 @@ public class lightUI extends Application {
         label.setTextFill(Color.web("#f2e8cf"));
 
         hBox.getChildren().addAll(icon, label);
+        hBox.setOnMouseClicked(EventHandler -> onClickAction.run());
+
         return hBox;
     }
 

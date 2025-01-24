@@ -1,6 +1,8 @@
 package com.spms.login;
 
 import com.spms.dashboard.DashboardUI;
+import com.spms.dashboard.adminUI;
+import com.spms.dashboard.userUI;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -10,6 +12,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.geometry.Insets;
+
+import static com.spms.dashboard.DashboardLogic.openDashboard;
 
 public class LoginUI extends Application {
 
@@ -45,7 +49,7 @@ public class LoginUI extends Application {
         CheckBox rememberMeCheckBox = new CheckBox("Remember me");
         rememberMeCheckBox.setStyle("-fx-text-fill: white;");
 
-        // Login Button
+        //Login Button
         Button loginButton = new Button("Login");
         loginButton.setStyle("-fx-background-color: #684d42; -fx-text-fill: white; -fx-font-size: 14px;");
         loginButton.setOnAction(e -> {
@@ -62,14 +66,10 @@ public class LoginUI extends Application {
             Auth userDAO = new Auth();
             if (userDAO.validateUser(email, password)) {
 
-                // Open the Dashboard
-                DashboardUI dashboard = new DashboardUI(); // Create an instance of the DashboardUI class
-                Stage dashboardStage = new Stage();
-                try {
-                    dashboard.start(dashboardStage);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
+                //Logic to open correct dashboard based on role
+
+                openDashboard();
+
 
                 // Close the Login Window
                 ((Stage) loginButton.getScene().getWindow()).close();

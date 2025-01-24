@@ -55,11 +55,11 @@ public class temperatureUI extends Application {
         navContainer.setStyle("-fx-padding: 20;");
 
         navContainer.getChildren().addAll(
-                createNavButton("Dashboard", "dashboard.png"),
-                createNavButton("Light", "sun.png"),
+                createNavButton("Dashboard", "dashboard.png", DashboardLogic::openDashboard),
+                createNavButton("Light", "sun.png", DashboardLogic::clickLightButton),
                 createHighlightedNavButton("Temperature", "temperature.png"),
-                createNavButton("Soil Moisture", "shovel.png"),
-                createNavButton("Settings", "settings.png")
+                createNavButton("Soil Moisture", "shovel.png", DashboardLogic::clickSoilButton),
+                createNavButton("Settings", "settings.png", null)
         );
 
         leftVBox.getChildren().addAll(logoContainer, navContainer);
@@ -142,7 +142,7 @@ public class temperatureUI extends Application {
         return card;
     }
 
-    private HBox createNavButton(String text, String iconPath) {
+    private HBox createNavButton(String text, String iconPath, Runnable onClickAction) {
         HBox hBox = new HBox(10);
         hBox.setAlignment(Pos.CENTER_LEFT);
         hBox.setStyle("-fx-padding: 10; -fx-background-color: #386641; -fx-background-radius: 5;");
@@ -156,6 +156,7 @@ public class temperatureUI extends Application {
         label.setTextFill(Color.web("#f2e8cf"));
 
         hBox.getChildren().addAll(icon, label);
+        hBox.setOnMouseClicked(EventHandler -> onClickAction.run());
         return hBox;
     }
 

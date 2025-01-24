@@ -11,6 +11,7 @@ import java.util.List;
 
 public class Auth {
     private static final String JSON_FILE_PATH = "src/main/resources/users.json";
+    static public String role = null;
 
     private List<User> getUsersFromJSON() {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -30,6 +31,7 @@ public class Auth {
 
         for (User user : users) {
             if (user.getEmail().equals(email) && user.getPassword().equals(password)) {
+                role = user.getRole();
                 return true;
             }
         }
