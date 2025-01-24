@@ -1,5 +1,6 @@
 package com.spms.dashboard;
 
+import com.spms.login.Auth;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -58,9 +59,9 @@ public class userUI extends Application {
 
         navContainer.getChildren().addAll(
                 createHighlightedNavButton("Dashboard", "dashboard.png"),
-                createNavButton("Light", "sun.png", DashboardLogic::clickLightButton),
-                createNavButton("Temperature", "temperature.png", DashboardLogic::clickTempButton),
-                createNavButton("Soil Moisture", "shovel.png", DashboardLogic::clickSoilButton),
+                createNavButton("Light", "sun.png", () -> System.out.println("Light clicked")),
+                createNavButton("Temperature", "temperature.png", () -> System.out.println("Temperature clicked")),
+                createNavButton("Soil Moisture", "shovel.png", () -> System.out.println("Soil Moisture clicked")),
                 createNavButton("Settings", "settings.png", null)
         );
 
@@ -73,17 +74,21 @@ public class userUI extends Application {
 
         centerVBox.getChildren().addAll(createLightLevelCard(), createTemperatureCard());
 
-        // Top menu bar
-        HBox topMenu = new HBox();
+        // Top menu bar with welcome message
+        HBox topMenu = new HBox(20);
         topMenu.setStyle("-fx-padding: 10 20; -fx-background-color: transparent;");
         topMenu.setAlignment(Pos.CENTER_RIGHT);
+
+        Label welcomeLabel = new Label("Welcome User "+ Auth.loggedInUser);
+        welcomeLabel.setFont(new Font("Malgun Gothic Bold", 18));
+        welcomeLabel.setTextFill(Color.web("#a56336"));
 
         MenuButton myAccountMenu = new MenuButton("My Account");
         myAccountMenu.setFont(new Font("Malgun Gothic Bold", 18));
         myAccountMenu.setStyle("-fx-background-color: #f2e8cf; -fx-text-fill: #dda15e;");
         myAccountMenu.getItems().add(new MenuItem("Logout"));
 
-        topMenu.getChildren().add(myAccountMenu);
+        topMenu.getChildren().addAll(welcomeLabel, myAccountMenu);
 
         // Set the layout in BorderPane
         borderPane.setLeft(leftVBox);
@@ -169,7 +174,12 @@ public class userUI extends Application {
         label.setTextFill(Color.web("#f2e8cf"));
 
         hBox.getChildren().addAll(icon, label);
-        hBox.setOnMouseClicked(EventHandler -> onClickAction.run());
+        hBox.setOnMouseClicked(event -> {
+            if (onClickAction != null) {
+                onClickAction.run();
+            }
+        });
+
         return hBox;
     }
 

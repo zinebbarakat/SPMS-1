@@ -1,5 +1,6 @@
 package com.spms.dashboard;
 
+import com.spms.login.Auth;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -11,8 +12,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-
-import java.beans.EventHandler;
 
 public class DashboardUI extends Application {
 
@@ -36,7 +35,7 @@ public class DashboardUI extends Application {
 
         // Left VBox for navigation menu
         VBox leftVBox = new VBox(10);
-        leftVBox.setPrefSize(250,620);
+        leftVBox.setPrefSize(250, 620);
         leftVBox.setStyle("-fx-background-color: #386641;");
         leftVBox.setAlignment(Pos.TOP_CENTER);
 
@@ -60,13 +59,11 @@ public class DashboardUI extends Application {
 
         navContainer.getChildren().addAll(
                 createHighlightedNavButton("Dashboard", "dashboard.png"),
-                createNavButton("Light", "sun.png", DashboardLogic::clickLightButton),
-                createNavButton("Temperature", "temperature.png", DashboardLogic::clickTempButton),
-                createNavButton("Soil Moisture", "shovel.png", DashboardLogic::clickSoilButton),
+                createNavButton("Light", "sun.png", () -> System.out.println("Light clicked")),
+                createNavButton("Temperature", "temperature.png", () -> System.out.println("Temperature clicked")),
+                createNavButton("Soil Moisture", "shovel.png", () -> System.out.println("Soil Moisture clicked")),
                 createNavButton("Settings", "settings.png", null)
         );
-
-
 
         leftVBox.getChildren().addAll(logoContainer, navContainer);
 
@@ -81,17 +78,21 @@ public class DashboardUI extends Application {
                 createTemperatureCard()
         );
 
-        // Top menu bar
+        // Top menu bar with Welcome message
         HBox topMenu = new HBox();
         topMenu.setStyle("-fx-padding: 10 20; -fx-background-color: transparent;");
         topMenu.setAlignment(Pos.CENTER_RIGHT);
 
-        MenuButton myAccountMenu = new MenuButton("My Account"); // add custom name
+        Label welcomeLabel = new Label("Welcome Premium User "+ Auth.loggedInUser);
+        welcomeLabel.setFont(new Font("Malgun Gothic Bold", 18));
+        welcomeLabel.setTextFill(Color.web("#a56336"));
+
+        MenuButton myAccountMenu = new MenuButton("My Account");
         myAccountMenu.setFont(new Font("Malgun Gothic Bold", 18));
         myAccountMenu.setStyle("-fx-background-color: #f2e8cf; -fx-text-fill: #dda15e;");
         myAccountMenu.getItems().add(new MenuItem("Logout"));
 
-        topMenu.getChildren().add(myAccountMenu);
+        topMenu.getChildren().addAll(welcomeLabel, myAccountMenu);
 
         // Set the layout in BorderPane
         borderPane.setLeft(leftVBox);
@@ -159,7 +160,11 @@ public class DashboardUI extends Application {
         label.setTextFill(Color.web("#f2e8cf"));
 
         hBox.getChildren().addAll(icon, label);
-        hBox.setOnMouseClicked(EventHandler -> onClickAction.run());
+        hBox.setOnMouseClicked(event -> {
+            if (onClickAction != null) {
+                onClickAction.run();
+            }
+        });
 
         return hBox;
     }
