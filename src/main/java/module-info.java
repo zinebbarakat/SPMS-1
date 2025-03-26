@@ -3,6 +3,7 @@ module com.example.login {
     requires javafx.fxml;
     requires com.fasterxml.jackson.databind;
     requires java.desktop;
+    requires java.sql;
 
     opens com.spms.login to javafx.fxml;
     exports com.spms.login;

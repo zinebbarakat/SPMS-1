@@ -1,8 +1,7 @@
 package com.spms.login;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.spms.login.User;
-
+import java.sql.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
