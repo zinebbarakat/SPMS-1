@@ -32,7 +32,7 @@ public class DashboardLogic {
     }
 
     public static void clickSoilButton() {
-        if(Auth.role.equals("Premium User") | Auth.role.equals("Admin")) {
+        if(Auth.role.equals("Premium") | Auth.role.equals("Admin")) {
             closeCurrentStage();
             soilMoistureUI soil = new soilMoistureUI();
             Stage soilStage = new Stage();
@@ -57,7 +57,7 @@ public class DashboardLogic {
 
     public static void openDashboard() {
         switch (Auth.role) {
-            case "User":
+            case "Basic":
                 closeCurrentStage();
                 userUI user = new userUI();
                 Stage userStage = new Stage();
@@ -68,7 +68,7 @@ public class DashboardLogic {
                     ex.printStackTrace();
                 }
                 break;
-            case "Premium User":
+            case "Premium":
                 closeCurrentStage();
                 DashboardUI premiumUser = new DashboardUI();
                 Stage premiumUserStage = new Stage();

@@ -1,63 +1,40 @@
 package com.spms.login;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.sql.*;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class Auth {
-    private static final String JSON_FILE_PATH = "src/main/resources/users.json";
     static public String role = null;
     static public String loggedInUser = null;
 
-    private List<User> getUsersFromJSON() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            return objectMapper.readValue(new File(JSON_FILE_PATH), new TypeReference<List<User>>() {});
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 
-    public boolean validateUser(String email, String password) {
-        List<User> users = getUsersFromJSON();
-        if (users == null) {
-            return false;
-        }
+    public boolean validateUser(String email, String password) throws SQLException {
+        Connection authConnection = spmsDB.connectToDB();
+        Statement statement = authConnection.createStatement();
 
-        for (User user : users) {
-            if (user.getEmail().equals(email) && user.getPassword().equals(password)) {
-                role = user.getRole();
-                loggedInUser = user.getEmail();
-                return true;
-            }
+        ResultSet resultSet = statement.executeQuery("SELECT * FROM user WHERE email = '" + email + "' AND password = '" + password + "'");
+        if (resultSet.next()) {
+            role = resultSet.getString("user_type");
+            loggedInUser = resultSet.getString("name");
+            spmsDB.terminateConnection(authConnection);
+            return true;
         }
+        spmsDB.terminateConnection(authConnection);
         return false;
     }
 
-    public void registerUser(String email, String password, String role) {
-        List<User> users = getUsersFromJSON();
-        if (users == null) {
-            users = new ArrayList<>();
-        }
+    public void registerUser(String email, String password, String role) throws SQLException {
+        Connection authConnection = spmsDB.connectToDB();
+        Statement statement = authConnection.createStatement();
 
-        User newUser = new User();
-        newUser.setEmail(email);
-        newUser.setPassword(password);
-        newUser.setRole(role);
+        ResultSet resultSet = statement.executeQuery("SELECT * FROM user WHERE email = '" + email + "'");
+        if (resultSet.next()) {
+            System.out.println("User already exists!");
 
-        users.add(newUser);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            objectMapper.writeValue(new File(JSON_FILE_PATH), users);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } else {
+            statement.executeUpdate("INSERT INTO user (email, password, user_type) VALUES ('" + email + "', '" + password + "', '" + role + "')");
+            System.out.println("User registered successfully!");
 
         }
+        spmsDB.terminateConnection(authConnection);
     }
 }
