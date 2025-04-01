@@ -1,8 +1,5 @@
 package com.spms.login;
 
-import com.spms.dashboard.DashboardUI;
-import com.spms.dashboard.adminUI;
-import com.spms.dashboard.userUI;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -12,6 +9,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.geometry.Insets;
+
+import java.sql.SQLException;
 
 import static com.spms.dashboard.DashboardLogic.openDashboard;
 
@@ -64,20 +63,24 @@ public class LoginUI extends Application {
             }
 
             Auth userDAO = new Auth();
-            if (userDAO.validateUser(email, password)) {
+            try {
+                if (userDAO.validateUser(email, password)) {
 
-                //Logic to open correct dashboard based on role
+                    //Logic to open correct dashboard based on role
 
-                openDashboard();
-
-
-                // Close the Login Window
-                ((Stage) loginButton.getScene().getWindow()).close();
+                    openDashboard();
 
 
-            } else {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid email or password.");
-                alert.show();
+                    // Close the Login Window
+                    ((Stage) loginButton.getScene().getWindow()).close();
+
+
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid email or password.");
+                    alert.show();
+                }
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
             }
         });
 
@@ -95,9 +98,9 @@ public class LoginUI extends Application {
             // Role selection
             Label roleLabel = new Label("Who are you registering as?");
             ToggleGroup roleGroup = new ToggleGroup();
-            RadioButton userRadio = new RadioButton("User");
+            RadioButton userRadio = new RadioButton("Basic");
             userRadio.setToggleGroup(roleGroup);
-            RadioButton premiumUserRadio = new RadioButton("Premium User");
+            RadioButton premiumUserRadio = new RadioButton("Premium");
             premiumUserRadio.setToggleGroup(roleGroup);
             RadioButton adminRadio = new RadioButton("Admin");
             adminRadio.setToggleGroup(roleGroup);
@@ -131,7 +134,11 @@ public class LoginUI extends Application {
 
                     // Register the user
                     Auth userDAO = new Auth();
-                    userDAO.registerUser(email, password, selectedRole);
+                    try {
+                        userDAO.registerUser(email, password, selectedRole);
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);
+                    }
 
                     registerStage.close();
                 }
