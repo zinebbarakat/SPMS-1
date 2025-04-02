@@ -4,7 +4,7 @@ public class User {
     private String email;
     private String password;
     private String role;
-
+    private String name;  // ✅ Added field
 
     // Getters and setters
     public String getEmail() {
@@ -31,6 +31,11 @@ public class User {
         this.role = role;
     }
 
+    public String getName() {   // ✅ Getter
+        return name;
+    }
 
-
+    public void setName(String name) {  // ✅ Setter
+        this.name = name;
+    }
 }
