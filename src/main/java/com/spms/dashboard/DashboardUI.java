@@ -21,25 +21,20 @@ public class DashboardUI extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        // AnchorPane as root
         AnchorPane anchorPane = new AnchorPane();
         anchorPane.setPrefSize(920, 620);
 
-        // BorderPane for main layout
         BorderPane borderPane = new BorderPane();
-        borderPane.setPrefSize(920, 620);
         AnchorPane.setBottomAnchor(borderPane, 0.0);
         AnchorPane.setLeftAnchor(borderPane, 0.0);
         AnchorPane.setRightAnchor(borderPane, 0.0);
         AnchorPane.setTopAnchor(borderPane, 0.0);
 
-        // Left VBox for navigation menu
         VBox leftVBox = new VBox(10);
         leftVBox.setPrefSize(250, 620);
         leftVBox.setStyle("-fx-background-color: #386641;");
         leftVBox.setAlignment(Pos.TOP_CENTER);
 
-        // SPMS logo and title
         VBox logoContainer = new VBox();
         logoContainer.setAlignment(Pos.CENTER);
         logoContainer.setSpacing(10);
@@ -52,7 +47,6 @@ public class DashboardUI extends Application {
         logoImage.setFitHeight(60);
         logoContainer.getChildren().addAll(logoImage, titleLabel);
 
-        // Navigation buttons
         VBox navContainer = new VBox(15);
         navContainer.setAlignment(Pos.TOP_LEFT);
         navContainer.setStyle("-fx-padding: 20;");
@@ -67,23 +61,20 @@ public class DashboardUI extends Application {
 
         leftVBox.getChildren().addAll(logoContainer, navContainer);
 
-        // Center layout for main content
         VBox centerVBox = new VBox(20);
         centerVBox.setAlignment(Pos.TOP_CENTER);
         centerVBox.setStyle("-fx-padding: 20;");
-
         centerVBox.getChildren().addAll(
-                createInfoCard("Light Level", "OPTIMAL", "#28a745", true),
-                createInfoCard("Soil Moisture", "SATISFACTORY", "#ffcc00", false),
+                createLightCard(),
+                createSoilCard(),
                 createTemperatureCard()
         );
 
-        // Top menu bar with Welcome message
         HBox topMenu = new HBox();
         topMenu.setStyle("-fx-padding: 10 20; -fx-background-color: transparent;");
         topMenu.setAlignment(Pos.CENTER_RIGHT);
 
-        Label welcomeLabel = new Label("Welcome Premium User "+ Auth.loggedInUser);
+        Label welcomeLabel = new Label("Welcome Premium User " + Auth.loggedInUser);
         welcomeLabel.setFont(new Font("Malgun Gothic Bold", 18));
         welcomeLabel.setTextFill(Color.web("#a56336"));
 
@@ -94,38 +85,56 @@ public class DashboardUI extends Application {
 
         topMenu.getChildren().addAll(welcomeLabel, myAccountMenu);
 
-        // Set the layout in BorderPane
         borderPane.setLeft(leftVBox);
         borderPane.setCenter(centerVBox);
         borderPane.setTop(topMenu);
-
         anchorPane.getChildren().add(borderPane);
 
-        // Scene and Stage
         Scene scene = new Scene(anchorPane);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Dashboard");
         primaryStage.show();
     }
 
-    private VBox createInfoCard(String title, String status, String color, boolean isOptimal) {
+    private VBox createLightCard() {
         VBox card = new VBox(10);
         card.setAlignment(Pos.CENTER);
         card.setPrefSize(400, 150);
         card.setStyle("-fx-background-color: #fef9e7; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);");
 
-        Label titleLabel = new Label(title);
+        Label titleLabel = new Label("Light Level");
         titleLabel.setFont(new Font("Malgun Gothic Bold", 18));
         titleLabel.setTextFill(Color.web("#a56336"));
 
-        Circle statusIcon = new Circle(20);
-        statusIcon.setFill(Color.web(color));
+        Circle greenCircle = new Circle(20);
+        greenCircle.setFill(Color.web("#28a745"));
 
-        Label statusLabel = new Label(status);
-        statusLabel.setFont(new Font("Malgun Gothic Bold", 20));
-        statusLabel.setTextFill(Color.web(color));
+        Label optimalLabel = new Label("OPTIMAL");
+        optimalLabel.setFont(new Font("Malgun Gothic Bold", 20));
+        optimalLabel.setTextFill(Color.web("#28a745"));
 
-        card.getChildren().addAll(titleLabel, statusIcon, statusLabel);
+        card.getChildren().addAll(titleLabel, greenCircle, optimalLabel);
+        return card;
+    }
+
+    private VBox createSoilCard() {
+        VBox card = new VBox(10);
+        card.setAlignment(Pos.CENTER);
+        card.setPrefSize(400, 150);
+        card.setStyle("-fx-background-color: #fef9e7; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);");
+
+        Label titleLabel = new Label("Soil Moisture");
+        titleLabel.setFont(new Font("Malgun Gothic Bold", 18));
+        titleLabel.setTextFill(Color.web("#a56336"));
+
+        Circle yellowCircle = new Circle(20);
+        yellowCircle.setFill(Color.web("#ffcc00"));
+
+        Label satisfactoryLabel = new Label("SATISFACTORY");
+        satisfactoryLabel.setFont(new Font("Malgun Gothic Bold", 20));
+        satisfactoryLabel.setTextFill(Color.web("#ffcc00"));
+
+        card.getChildren().addAll(titleLabel, yellowCircle, satisfactoryLabel);
         return card;
     }
 
@@ -139,10 +148,14 @@ public class DashboardUI extends Application {
         titleLabel.setFont(new Font("Malgun Gothic Bold", 18));
         titleLabel.setTextFill(Color.web("#a56336"));
 
-        ProgressBar progressBar = new ProgressBar(0.5);
-        progressBar.setStyle("-fx-accent: red;");
+        Circle redCircle = new Circle(20);
+        redCircle.setFill(Color.RED);
 
-        card.getChildren().addAll(titleLabel, progressBar);
+        Label suboptimalLabel = new Label("SUBOPTIMAL");
+        suboptimalLabel.setFont(new Font("Malgun Gothic Bold", 20));
+        suboptimalLabel.setTextFill(Color.RED);
+
+        card.getChildren().addAll(titleLabel, redCircle, suboptimalLabel);
         return card;
     }
 
