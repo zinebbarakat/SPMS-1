@@ -8,6 +8,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -101,28 +102,43 @@ public class temperatureUI extends Application {
         VBox card = new VBox(20);
         card.setAlignment(Pos.TOP_CENTER);
         card.setPrefSize(600, 400);
-        card.setStyle("-fx-background-color: #fef9e7; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);");
+        card.setStyle(
+                "-fx-background-color: #fef9e7; " +
+                        "-fx-padding: 20; " +
+                        "-fx-border-radius: 10; " +
+                        "-fx-background-radius: 10; " +
+                        "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);"
+        );
 
         // Title
         Label titleLabel = new Label("Temperature");
         titleLabel.setFont(new Font("Malgun Gothic Bold", 28));
         titleLabel.setTextFill(Color.web("#a56336"));
 
-        // Current Temperature Label
-        Label currentTempLabel = new Label("Current Temperature (°C): 25");
-        currentTempLabel.setFont(new Font("Malgun Gothic Bold", 18));
-        currentTempLabel.setTextFill(Color.web("#000000"));
+        // Green circle
+        Circle circle = new Circle(30); // radius = 30
+        circle.setFill(Color.web("#3DAA3D"));
 
-        // Add Image (Gauge)
-        ImageView gaugeImage = new ImageView(new Image(getClass().getResource("/gauge.jpg").toExternalForm()));
-        gaugeImage.setFitWidth(200); // Adjust the width of the image
-        gaugeImage.setPreserveRatio(true); // Maintain aspect ratio
-        gaugeImage.setSmooth(true);
+        // "OPTIMAL" label
+        Label optimalLabel = new Label("OPTIMAL");
+        optimalLabel.setFont(new Font("Malgun Gothic Bold", 20));
+        optimalLabel.setTextFill(Color.web("#3DAA3D"));
 
-        // Simple Temperature Indicator Box
+        // "Current Measurement" label
+        Label measurementLabel = new Label("CURRENT MEASUREMENT: 21°C");
+        measurementLabel.setFont(new Font("Malgun Gothic Bold", 18));
+        measurementLabel.setTextFill(Color.web("#000000"));
+
+        // Temperature range indicators
         VBox indicatorBox = new VBox(20);
         indicatorBox.setAlignment(Pos.CENTER);
-        indicatorBox.setStyle("-fx-background-color: #f7f6f2; -fx-padding: 30; -fx-border-radius: 10; -fx-background-radius: 10; -fx-border-color: #ccc;");
+        indicatorBox.setStyle(
+                "-fx-background-color: #f7f6f2; " +
+                        "-fx-padding: 30; " +
+                        "-fx-border-radius: 10; " +
+                        "-fx-background-radius: 10; " +
+                        "-fx-border-color: #ccc;"
+        );
 
         Label lowTempLabel = new Label("Low Temperature: 10 - 15 °C");
         lowTempLabel.setFont(new Font("Malgun Gothic", 14));
@@ -132,13 +148,14 @@ public class temperatureUI extends Application {
         optimalTempLabel.setFont(new Font("Malgun Gothic", 14));
         optimalTempLabel.setTextFill(Color.web("#ffa500"));
 
-        Label highTempLabel = new Label("Highest Temperature: 30 - 35 °C");
+        Label highTempLabel = new Label("High Temperature: 30 - 35 °C");
         highTempLabel.setFont(new Font("Malgun Gothic", 14));
         highTempLabel.setTextFill(Color.web("#006400"));
 
         indicatorBox.getChildren().addAll(lowTempLabel, optimalTempLabel, highTempLabel);
 
-        card.getChildren().addAll(titleLabel, currentTempLabel, gaugeImage, indicatorBox);
+        // Assemble card layout
+        card.getChildren().addAll(titleLabel, circle, optimalLabel, measurementLabel, indicatorBox);
         return card;
     }
 
@@ -156,7 +173,11 @@ public class temperatureUI extends Application {
         label.setTextFill(Color.web("#f2e8cf"));
 
         hBox.getChildren().addAll(icon, label);
-        hBox.setOnMouseClicked(EventHandler -> onClickAction.run());
+        hBox.setOnMouseClicked(event -> {
+            if (onClickAction != null) {
+                onClickAction.run();
+            }
+        });
         return hBox;
     }
 
