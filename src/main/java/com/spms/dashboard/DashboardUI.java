@@ -106,15 +106,42 @@ public class DashboardUI extends Application {
         titleLabel.setFont(new Font("Malgun Gothic Bold", 18));
         titleLabel.setTextFill(Color.web("#a56336"));
 
-        Circle greenCircle = new Circle(20);
-        greenCircle.setFill(Color.web("#28a745"));
+        // Get light value from your data source
+        int light = getLightLevel();
 
-        Label optimalLabel = new Label("OPTIMAL");
-        optimalLabel.setFont(new Font("Malgun Gothic Bold", 20));
-        optimalLabel.setTextFill(Color.web("#28a745"));
+        Circle circle = new Circle(20);
+        Label lightLabel = new Label();
+        lightLabel.setFont(new Font("Malgun Gothic Bold", 20));
 
-        card.getChildren().addAll(titleLabel, greenCircle, optimalLabel);
+        // Set color and text based on light value
+        Color statusColor;
+        String statusText;
+
+        if (light == 1) {
+            statusColor = Color.web("#28a745"); // Green
+            statusText = "OPTIMAL";
+        } else { // When light == 0
+            statusColor = Color.RED;
+            statusText = "SUBOPTIMAL";
+        }
+
+        circle.setFill(statusColor);
+        lightLabel.setText(statusText);
+        lightLabel.setTextFill(statusColor);
+
+        // Add current light level status
+        Label actualLightLabel = new Label("CURRENT MEASUREMENT: " + (light == 1 ? "ON" : "OFF"));
+        actualLightLabel.setFont(new Font("Malgun Gothic", 14));
+        actualLightLabel.setTextFill(Color.web("#666666"));
+
+        card.getChildren().addAll(titleLabel, circle, lightLabel, actualLightLabel);
         return card;
+    }
+    // Method to get light level - implement according to your data source
+    private int getLightLevel() {
+        // TODO: Replace with actual implementation to get light sensor data
+        // For testing, return either 0 or 1
+        return 1; // Example value - optimal
     }
 
     private VBox createSoilCard() {
@@ -127,15 +154,45 @@ public class DashboardUI extends Application {
         titleLabel.setFont(new Font("Malgun Gothic Bold", 18));
         titleLabel.setTextFill(Color.web("#a56336"));
 
-        Circle yellowCircle = new Circle(20);
-        yellowCircle.setFill(Color.web("#ffcc00"));
+        // Get humidity value from your data source
+        double humidity = getHumidity();
 
-        Label satisfactoryLabel = new Label("SATISFACTORY");
-        satisfactoryLabel.setFont(new Font("Malgun Gothic Bold", 20));
-        satisfactoryLabel.setTextFill(Color.web("#ffcc00"));
+        Circle circle = new Circle(20);
+        Label humidityLabel = new Label();
+        humidityLabel.setFont(new Font("Malgun Gothic Bold", 20));
 
-        card.getChildren().addAll(titleLabel, yellowCircle, satisfactoryLabel);
+        // Set color and text based on humidity range
+        Color statusColor;
+        String statusText;
+
+        if ((humidity >= 0 && humidity < 30) || (humidity > 70 && humidity <= 100)) {
+            statusColor = Color.RED;
+            statusText = "SUBOPTIMAL";
+        } else if ((humidity >= 30 && humidity < 40) || (humidity > 60 && humidity <= 70)) {
+            statusColor = Color.web("#ffcc00"); // Yellow
+            statusText = "SATISFACTORY";
+        } else { // Between 40 and 60
+            statusColor = Color.web("#28a745"); // Green
+            statusText = "OPTIMAL";
+        }
+
+        circle.setFill(statusColor);
+        humidityLabel.setText(statusText);
+        humidityLabel.setTextFill(statusColor);
+
+        // Add actual humidity value display
+        Label actualHumidityLabel = new Label(String.format("CURRENT MEASUREMENT: %.1f %%", humidity));
+        actualHumidityLabel.setFont(new Font("Malgun Gothic", 14));
+        actualHumidityLabel.setTextFill(Color.web("#666666"));
+
+        card.getChildren().addAll(titleLabel, circle, humidityLabel, actualHumidityLabel);
         return card;
+    }
+    // Method to get humidity - implement according to your data source
+    private double getHumidity() {
+        // TODO: Replace with actual implementation to get humidity data
+        // For testing, you could return different values to see different states
+        return 77; // Example value - optimal range
     }
 
     private VBox createTemperatureCard() {
@@ -148,17 +205,46 @@ public class DashboardUI extends Application {
         titleLabel.setFont(new Font("Malgun Gothic Bold", 18));
         titleLabel.setTextFill(Color.web("#a56336"));
 
-        Circle redCircle = new Circle(20);
-        redCircle.setFill(Color.RED);
+        // Get temperature value from your data source
+        double temperature = getTemperature(); // Implement this method to fetch temperature data
 
-        Label suboptimalLabel = new Label("SUBOPTIMAL");
-        suboptimalLabel.setFont(new Font("Malgun Gothic Bold", 20));
-        suboptimalLabel.setTextFill(Color.RED);
+        Circle circle = new Circle(20);
+        Label temperatureLabel = new Label();
+        temperatureLabel.setFont(new Font("Malgun Gothic Bold", 20));
 
-        card.getChildren().addAll(titleLabel, redCircle, suboptimalLabel);
+        // Set color and text based on temperature range
+        Color statusColor;
+        String statusText;
+
+        if ((temperature >= 0 && temperature < 15) || (temperature > 30 && temperature <= 50)) {
+            statusColor = Color.RED;
+            statusText = "SUBOPTIMAL";
+        } else if ((temperature >= 15 && temperature < 20) || (temperature >= 25 && temperature <= 30)) {
+            statusColor = Color.web("#ffcc00"); // Yellow
+            statusText = "SATISFACTORY";
+        } else { // Between 20 and 25
+            statusColor = Color.web("#28a745"); // Green
+            statusText = "OPTIMAL";
+        }
+
+        circle.setFill(statusColor);
+        temperatureLabel.setText(statusText);
+        temperatureLabel.setTextFill(statusColor);
+
+        // Add actual temperature value display
+        Label actualTempLabel = new Label(String.format("CURRENT MEASUREMENT: %.1f °C", temperature));
+        actualTempLabel.setFont(new Font("Malgun Gothic", 14));
+        actualTempLabel.setTextFill(Color.web("#666666"));
+
+        card.getChildren().addAll(titleLabel, circle, temperatureLabel, actualTempLabel);
         return card;
     }
-
+    // Method to get temperature - implement according to your data source
+    private double getTemperature() {
+        // TODO: Replace with actual implementation to get temperature data
+        // For testing, you could return different values to see different states
+        return 19; // Example value
+    }
     private HBox createNavButton(String text, String iconPath, Runnable onClickAction) {
         HBox hBox = new HBox(10);
         hBox.setAlignment(Pos.CENTER_LEFT);
