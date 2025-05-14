@@ -9,6 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -58,7 +59,7 @@ public class lightUI extends Application {
 
         navButtons.getChildren().addAll(
                 createNavButton("Dashboard", "dashboard.png", DashboardLogic::openDashboard),
-                createHighlightedNavButton("Light", "sun.png"), // Highlighted "Light"
+                createHighlightedNavButton("Light", "sun.png"),
                 createNavButton("Temperature", "temperature.png", DashboardLogic::clickTempButton),
                 createNavButton("Soil Moisture", "shovel.png", DashboardLogic::clickSoilButton),
                 createNavButton("Settings", "settings.png", null)
@@ -70,7 +71,6 @@ public class lightUI extends Application {
         StackPane centerContent = new StackPane();
         centerContent.setAlignment(Pos.CENTER);
         centerContent.setStyle("-fx-padding: 30;");
-
         centerContent.getChildren().add(createLightIntensityCard());
 
         // Top Menu Bar
@@ -109,46 +109,39 @@ public class lightUI extends Application {
         Label titleLabel = new Label("Light Intensity");
         titleLabel.setFont(new Font("Malgun Gothic Bold", 28));
         titleLabel.setTextFill(Color.web("#a56336"));
-        VBox.setMargin(titleLabel, new Insets(0, 0, 30, 0)); // Add space below title
+        VBox.setMargin(titleLabel, new Insets(0, 0, 30, 0));
 
-        // Current Intensity
-        Label intensityLabel = new Label("Current Light Intensity (Lux): 500");
-        intensityLabel.setFont(new Font("Malgun Gothic Bold", 18));
-        intensityLabel.setTextFill(Color.web("#000000"));
+        // Green Circle
+        Circle circle = new Circle(30);
+        circle.setFill(Color.web("#3DAA3D"));
 
-        // Horizontal Bar to Represent Intensity
-        ProgressBar intensityBar = new ProgressBar(0.5);
-        intensityBar.setPrefWidth(500);
-        intensityBar.setPrefHeight(60); // Make bar even thicker
-        intensityBar.setStyle("-fx-accent: #ffa500;");
+        // "OPTIMAL" Label
+        Label optimalLabel = new Label("OPTIMAL");
+        optimalLabel.setFont(new Font("Malgun Gothic Bold", 20));
+        optimalLabel.setTextFill(Color.web("#3DAA3D"));
 
-        // Intensity Value Below Bar
-        Label intensityValueLabel = new Label("500 Lux");
-        intensityValueLabel.setFont(new Font("Malgun Gothic Bold", 16));
-        intensityValueLabel.setTextFill(Color.web("#000000"));
-        VBox.setMargin(intensityValueLabel, new Insets(5, 0, 20, 0)); // Add space below bar
+        // Current Measurement
+        Label measurementLabel = new Label("Current Measurement: 500 Lux");
+        measurementLabel.setFont(new Font("Malgun Gothic Bold", 18));
+        measurementLabel.setTextFill(Color.web("#000000"));
 
-        // Intensity Description Box
+        // Intensity Description Box (without "Low Light")
         VBox descriptionBox = new VBox(10);
         descriptionBox.setAlignment(Pos.CENTER);
         descriptionBox.setStyle("-fx-background-color: #f7f6f2; -fx-padding: 15; -fx-border-radius: 10; -fx-background-radius: 10; -fx-border-color: #ccc;");
-        VBox.setMargin(descriptionBox, new Insets(20, 0, 0, 0)); // Move box further down
+        VBox.setMargin(descriptionBox, new Insets(20, 0, 0, 0));
 
-        Label lowDescLabel = new Label("Low Light: 50 - 200 Lux");
-        lowDescLabel.setFont(new Font("Malgun Gothic", 14));
-        lowDescLabel.setTextFill(Color.web("#8b0000"));
-
-        Label intermediateDescLabel = new Label("Intermediate Light: 200 - 500 Lux");
+        Label intermediateDescLabel = new Label("Optimal: 200 - 500 Lux");
         intermediateDescLabel.setFont(new Font("Malgun Gothic", 14));
         intermediateDescLabel.setTextFill(Color.web("#ffa500"));
 
-        Label brightDescLabel = new Label("Bright Light: 500 - 2000 Lux");
+        Label brightDescLabel = new Label("Suboptimal: 500 - 2000 Lux");
         brightDescLabel.setFont(new Font("Malgun Gothic", 14));
         brightDescLabel.setTextFill(Color.web("#006400"));
 
-        descriptionBox.getChildren().addAll(lowDescLabel, intermediateDescLabel, brightDescLabel);
+        descriptionBox.getChildren().addAll(intermediateDescLabel, brightDescLabel);
 
-        card.getChildren().addAll(titleLabel, intensityLabel, intensityBar, intensityValueLabel, descriptionBox);
+        card.getChildren().addAll(titleLabel, circle, optimalLabel, measurementLabel, descriptionBox);
         return card;
     }
 
@@ -166,7 +159,11 @@ public class lightUI extends Application {
         label.setTextFill(Color.web("#f2e8cf"));
 
         hBox.getChildren().addAll(icon, label);
-        hBox.setOnMouseClicked(EventHandler -> onClickAction.run());
+        hBox.setOnMouseClicked(event -> {
+            if (onClickAction != null) {
+                onClickAction.run();
+            }
+        });
 
         return hBox;
     }

@@ -8,6 +8,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -19,11 +20,9 @@ public class soilMoistureUI extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        // AnchorPane as root
         AnchorPane anchorPane = new AnchorPane();
         anchorPane.setPrefSize(920, 620);
 
-        // BorderPane for main layout
         BorderPane borderPane = new BorderPane();
         borderPane.setPrefSize(920, 620);
         AnchorPane.setBottomAnchor(borderPane, 0.0);
@@ -31,13 +30,11 @@ public class soilMoistureUI extends Application {
         AnchorPane.setRightAnchor(borderPane, 0.0);
         AnchorPane.setTopAnchor(borderPane, 0.0);
 
-        // Left VBox for navigation menu
         VBox leftVBox = new VBox(10);
         leftVBox.setPrefSize(250, 620);
         leftVBox.setStyle("-fx-background-color: #386641;");
         leftVBox.setAlignment(Pos.TOP_CENTER);
 
-        // SPMS logo and title
         VBox logoContainer = new VBox();
         logoContainer.setAlignment(Pos.CENTER);
         logoContainer.setSpacing(10);
@@ -64,14 +61,12 @@ public class soilMoistureUI extends Application {
 
         leftVBox.getChildren().addAll(logoContainer, navContainer);
 
-        // Center layout for main content
         VBox centerVBox = new VBox(20);
         centerVBox.setAlignment(Pos.TOP_CENTER);
         centerVBox.setStyle("-fx-padding: 20;");
 
         centerVBox.getChildren().add(createSoilMoistureCard());
 
-        // Top menu bar
         HBox topMenu = new HBox();
         topMenu.setStyle("-fx-padding: 10 20; -fx-background-color: transparent;");
         topMenu.setAlignment(Pos.CENTER_RIGHT);
@@ -83,14 +78,12 @@ public class soilMoistureUI extends Application {
 
         topMenu.getChildren().add(myAccountMenu);
 
-        // Set the layout in BorderPane
         borderPane.setLeft(leftVBox);
         borderPane.setCenter(centerVBox);
         borderPane.setTop(topMenu);
 
         anchorPane.getChildren().add(borderPane);
 
-        // Scene and Stage
         Scene scene = new Scene(anchorPane);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Soil Moisture Dashboard");
@@ -108,18 +101,19 @@ public class soilMoistureUI extends Application {
         titleLabel.setFont(new Font("Malgun Gothic Bold", 28));
         titleLabel.setTextFill(Color.web("#a56336"));
 
-        // Current Moisture Label
-        Label currentMoistureLabel = new Label("Current Moisture (%): 40");
-        currentMoistureLabel.setFont(new Font("Malgun Gothic Bold", 18));
-        currentMoistureLabel.setTextFill(Color.web("#000000"));
+        // Circle and labels
+        Circle circle = new Circle(30);
+        circle.setFill(Color.web("#3DAA3D"));
 
-        // Add Image (Soil Moisture Gauge)
-        ImageView moistureImage = new ImageView(new Image(getClass().getResource("/soil.jpg").toExternalForm()));
-        moistureImage.setFitWidth(500);
-        moistureImage.setPreserveRatio(true);
-        moistureImage.setSmooth(true);
+        Label optimalLabel = new Label("OPTIMAL");
+        optimalLabel.setFont(new Font("Malgun Gothic Bold", 20));
+        optimalLabel.setTextFill(Color.web("#3DAA3D"));
 
-        // Simple Moisture Indicator Box
+        Label measurementLabel = new Label("CURRENT MEASUREMENT: 40%");
+        measurementLabel.setFont(new Font("Malgun Gothic Bold", 18));
+        measurementLabel.setTextFill(Color.web("#000000"));
+
+        // Indicator box
         VBox indicatorBox = new VBox(20);
         indicatorBox.setAlignment(Pos.CENTER);
         indicatorBox.setStyle("-fx-background-color: #f7f6f2; -fx-padding: 30; -fx-border-radius: 10; -fx-background-radius: 10; -fx-border-color: #ccc;");
@@ -128,7 +122,7 @@ public class soilMoistureUI extends Application {
         dryLabel.setFont(new Font("Malgun Gothic", 14));
         dryLabel.setTextFill(Color.web("#8b0000"));
 
-        Label moderateLabel = new Label("Moderate: 40% - 60%");
+        Label moderateLabel = new Label("Optimal: 40% - 60%");
         moderateLabel.setFont(new Font("Malgun Gothic", 14));
         moderateLabel.setTextFill(Color.web("#ffa500"));
 
@@ -138,7 +132,7 @@ public class soilMoistureUI extends Application {
 
         indicatorBox.getChildren().addAll(dryLabel, moderateLabel, wetLabel);
 
-        card.getChildren().addAll(titleLabel, currentMoistureLabel, moistureImage, indicatorBox);
+        card.getChildren().addAll(titleLabel, circle, optimalLabel, measurementLabel, indicatorBox);
         return card;
     }
 
@@ -156,7 +150,11 @@ public class soilMoistureUI extends Application {
         label.setTextFill(Color.web("#f2e8cf"));
 
         hBox.getChildren().addAll(icon, label);
-        hBox.setOnMouseClicked(EventHandler -> onClickAction.run());
+        hBox.setOnMouseClicked(event -> {
+            if (onClickAction != null) {
+                onClickAction.run();
+            }
+        });
         return hBox;
     }
 
