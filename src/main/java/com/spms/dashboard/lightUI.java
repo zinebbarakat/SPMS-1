@@ -111,38 +111,62 @@ public class lightUI extends Application {
         titleLabel.setTextFill(Color.web("#a56336"));
         VBox.setMargin(titleLabel, new Insets(0, 0, 30, 0));
 
-        // Green Circle
-        Circle circle = new Circle(30);
-        circle.setFill(Color.web("#3DAA3D"));
+        // Get light value from your data source
+        int light = getLightLevel();
 
-        // "OPTIMAL" Label
-        Label optimalLabel = new Label("OPTIMAL");
-        optimalLabel.setFont(new Font("Malgun Gothic Bold", 20));
-        optimalLabel.setTextFill(Color.web("#3DAA3D"));
+        // Circle indicator
+        Circle circle = new Circle(30);
+
+        // Status label
+        Label statusLabel = new Label();
+        statusLabel.setFont(new Font("Malgun Gothic Bold", 20));
+
+        // Set color and text based on light value
+        Color statusColor;
+        String statusText;
+
+        if (light == 0) {
+            statusColor = Color.web("#28a745"); // Green
+            statusText = "OPTIMAL";
+        } else { // When light == 0
+            statusColor = Color.RED;
+            statusText = "SUBOPTIMAL";
+        }
+
+        circle.setFill(statusColor);
+        statusLabel.setText(statusText);
+        statusLabel.setTextFill(statusColor);
 
         // Current Measurement
-        Label measurementLabel = new Label("Current Measurement: 500 Lux");
+        Label measurementLabel = new Label("CURRENT MEASUREMENT: " + (light == 1 ? "ON" : "OFF"));
         measurementLabel.setFont(new Font("Malgun Gothic Bold", 18));
-        measurementLabel.setTextFill(Color.web("#000000"));
+        measurementLabel.setTextFill(Color.web("#666666"));
 
-        // Intensity Description Box (without "Low Light")
+        // Intensity Description Box
         VBox descriptionBox = new VBox(10);
         descriptionBox.setAlignment(Pos.CENTER);
         descriptionBox.setStyle("-fx-background-color: #f7f6f2; -fx-padding: 15; -fx-border-radius: 10; -fx-background-radius: 10; -fx-border-color: #ccc;");
         VBox.setMargin(descriptionBox, new Insets(20, 0, 0, 0));
 
-        Label intermediateDescLabel = new Label("Optimal: 200 - 500 Lux");
+        Label intermediateDescLabel = new Label("Optimal: Light is ON");
         intermediateDescLabel.setFont(new Font("Malgun Gothic", 14));
-        intermediateDescLabel.setTextFill(Color.web("#ffa500"));
+        intermediateDescLabel.setTextFill(Color.web("#28a745"));
 
-        Label brightDescLabel = new Label("Suboptimal: 500 - 2000 Lux");
+        Label brightDescLabel = new Label("Suboptimal: Light is OFF");
         brightDescLabel.setFont(new Font("Malgun Gothic", 14));
-        brightDescLabel.setTextFill(Color.web("#006400"));
+        brightDescLabel.setTextFill(Color.RED);
 
         descriptionBox.getChildren().addAll(intermediateDescLabel, brightDescLabel);
 
-        card.getChildren().addAll(titleLabel, circle, optimalLabel, measurementLabel, descriptionBox);
+        card.getChildren().addAll(titleLabel, circle, statusLabel, measurementLabel, descriptionBox);
         return card;
+    }
+
+    // Method to get light level - implement according to your data source
+    private int getLightLevel() {
+        // TODO: Replace with actual implementation to get light sensor data
+        // For testing, return either 0 or 1
+        return 1; // Example value - optimal
     }
 
     private HBox createNavButton(String text, String iconPath, Runnable onClickAction) {

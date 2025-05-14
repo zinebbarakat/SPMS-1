@@ -55,8 +55,7 @@ public class DashboardUI extends Application {
                 createHighlightedNavButton("Dashboard", "dashboard.png"),
                 createNavButton("Light", "sun.png", DashboardLogic::clickLightButton),
                 createNavButton("Temperature", "temperature.png", DashboardLogic::clickTempButton),
-                createNavButton("Soil Moisture", "shovel.png", DashboardLogic::clickSoilButton),
-                createNavButton("Settings", "settings.png", null)
+                createNavButton("Soil Moisture", "shovel.png", DashboardLogic::clickSoilButton)
         );
 
         leftVBox.getChildren().addAll(logoContainer, navContainer);

@@ -101,39 +101,66 @@ public class soilMoistureUI extends Application {
         titleLabel.setFont(new Font("Malgun Gothic Bold", 28));
         titleLabel.setTextFill(Color.web("#a56336"));
 
-        // Circle and labels
+        // Get humidity value from your data source
+        double humidity = getHumidity();
+
+        // Circle and status indicators
         Circle circle = new Circle(30);
-        circle.setFill(Color.web("#3DAA3D"));
+        Label statusLabel = new Label();
+        statusLabel.setFont(new Font("Malgun Gothic Bold", 20));
 
-        Label optimalLabel = new Label("OPTIMAL");
-        optimalLabel.setFont(new Font("Malgun Gothic Bold", 20));
-        optimalLabel.setTextFill(Color.web("#3DAA3D"));
+        // Set color and text based on humidity range
+        Color statusColor;
+        String statusText;
 
-        Label measurementLabel = new Label("CURRENT MEASUREMENT: 40%");
+        if ((humidity >= 0 && humidity < 30) || (humidity > 70 && humidity <= 100)) {
+            statusColor = Color.RED;
+            statusText = "SUBOPTIMAL";
+        } else if ((humidity >= 30 && humidity < 40) || (humidity > 60 && humidity <= 70)) {
+            statusColor = Color.web("#ffcc00"); // Yellow
+            statusText = "SATISFACTORY";
+        } else { // Between 40 and 60
+            statusColor = Color.web("#28a745"); // Green
+            statusText = "OPTIMAL";
+        }
+
+        circle.setFill(statusColor);
+        statusLabel.setText(statusText);
+        statusLabel.setTextFill(statusColor);
+
+        // Current measurement display
+        Label measurementLabel = new Label(String.format("CURRENT MEASUREMENT: %.1f %%", humidity));
         measurementLabel.setFont(new Font("Malgun Gothic Bold", 18));
-        measurementLabel.setTextFill(Color.web("#000000"));
+        measurementLabel.setTextFill(Color.web("#666666"));
 
-        // Indicator box
+        // Indicator box with ranges
         VBox indicatorBox = new VBox(20);
         indicatorBox.setAlignment(Pos.CENTER);
         indicatorBox.setStyle("-fx-background-color: #f7f6f2; -fx-padding: 30; -fx-border-radius: 10; -fx-background-radius: 10; -fx-border-color: #ccc;");
 
-        Label dryLabel = new Label("Dry: 10% - 30%");
-        dryLabel.setFont(new Font("Malgun Gothic", 14));
-        dryLabel.setTextFill(Color.web("#8b0000"));
+        Label suboptimalLabel = new Label("Suboptimal: 0% - 30% or 70% - 100%");
+        suboptimalLabel.setFont(new Font("Malgun Gothic", 14));
+        suboptimalLabel.setTextFill(Color.RED);
 
-        Label moderateLabel = new Label("Optimal: 40% - 60%");
-        moderateLabel.setFont(new Font("Malgun Gothic", 14));
-        moderateLabel.setTextFill(Color.web("#ffa500"));
+        Label satisfactoryLabel = new Label("Satisfactory: 30% - 40% or 60% - 70%");
+        satisfactoryLabel.setFont(new Font("Malgun Gothic", 14));
+        satisfactoryLabel.setTextFill(Color.web("#ffcc00"));
 
-        Label wetLabel = new Label("Wet: 70% - 90%");
-        wetLabel.setFont(new Font("Malgun Gothic", 14));
-        wetLabel.setTextFill(Color.web("#006400"));
+        Label optimalLabel = new Label("Optimal: 40% - 60%");
+        optimalLabel.setFont(new Font("Malgun Gothic", 14));
+        optimalLabel.setTextFill(Color.web("#28a745"));
 
-        indicatorBox.getChildren().addAll(dryLabel, moderateLabel, wetLabel);
+        indicatorBox.getChildren().addAll(suboptimalLabel, satisfactoryLabel, optimalLabel);
 
-        card.getChildren().addAll(titleLabel, circle, optimalLabel, measurementLabel, indicatorBox);
+        card.getChildren().addAll(titleLabel, circle, statusLabel, measurementLabel, indicatorBox);
         return card;
+    }
+
+    // Method to get humidity - implement according to your data source
+    private double getHumidity() {
+        // TODO: Replace with actual implementation to get humidity data
+        // For testing, you could return different values to see different states
+        return 60; // Example value - optimal range
     }
 
     private HBox createNavButton(String text, String iconPath, Runnable onClickAction) {

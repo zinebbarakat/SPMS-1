@@ -102,61 +102,74 @@ public class temperatureUI extends Application {
         VBox card = new VBox(20);
         card.setAlignment(Pos.TOP_CENTER);
         card.setPrefSize(600, 400);
-        card.setStyle(
-                "-fx-background-color: #fef9e7; " +
-                        "-fx-padding: 20; " +
-                        "-fx-border-radius: 10; " +
-                        "-fx-background-radius: 10; " +
-                        "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);"
-        );
+        card.setStyle("-fx-background-color: #fef9e7; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);");
 
         // Title
         Label titleLabel = new Label("Temperature");
         titleLabel.setFont(new Font("Malgun Gothic Bold", 28));
         titleLabel.setTextFill(Color.web("#a56336"));
 
-        // Green circle
-        Circle circle = new Circle(30); // radius = 30
-        circle.setFill(Color.web("#3DAA3D"));
+        // Get temperature value from your data source
+        double temperature = getTemperature();
 
-        // "OPTIMAL" label
-        Label optimalLabel = new Label("OPTIMAL");
-        optimalLabel.setFont(new Font("Malgun Gothic Bold", 20));
-        optimalLabel.setTextFill(Color.web("#3DAA3D"));
+        // Circle and status indicators
+        Circle circle = new Circle(30);
+        Label statusLabel = new Label();
+        statusLabel.setFont(new Font("Malgun Gothic Bold", 20));
 
-        // "Current Measurement" label
-        Label measurementLabel = new Label("CURRENT MEASUREMENT: 21°C");
+        // Set color and text based on temperature range
+        Color statusColor;
+        String statusText;
+
+        if ((temperature >= 0 && temperature < 15) || (temperature > 30 && temperature <= 50)) {
+            statusColor = Color.RED;
+            statusText = "SUBOPTIMAL";
+        } else if ((temperature >= 15 && temperature < 20) || (temperature >= 25 && temperature <= 30)) {
+            statusColor = Color.web("#ffcc00"); // Yellow
+            statusText = "SATISFACTORY";
+        } else { // Between 20 and 25
+            statusColor = Color.web("#28a745"); // Green
+            statusText = "OPTIMAL";
+        }
+
+        circle.setFill(statusColor);
+        statusLabel.setText(statusText);
+        statusLabel.setTextFill(statusColor);
+
+        // Current measurement display
+        Label measurementLabel = new Label(String.format("CURRENT MEASUREMENT: %.1f °C", temperature));
         measurementLabel.setFont(new Font("Malgun Gothic Bold", 18));
-        measurementLabel.setTextFill(Color.web("#000000"));
+        measurementLabel.setTextFill(Color.web("#666666"));
 
         // Temperature range indicators
         VBox indicatorBox = new VBox(20);
         indicatorBox.setAlignment(Pos.CENTER);
-        indicatorBox.setStyle(
-                "-fx-background-color: #f7f6f2; " +
-                        "-fx-padding: 30; " +
-                        "-fx-border-radius: 10; " +
-                        "-fx-background-radius: 10; " +
-                        "-fx-border-color: #ccc;"
-        );
+        indicatorBox.setStyle("-fx-background-color: #f7f6f2; -fx-padding: 30; -fx-border-radius: 10; -fx-background-radius: 10; -fx-border-color: #ccc;");
 
-        Label lowTempLabel = new Label("Low Temperature: 10 - 15 °C");
-        lowTempLabel.setFont(new Font("Malgun Gothic", 14));
-        lowTempLabel.setTextFill(Color.web("#8b0000"));
+        Label suboptimalLabel = new Label("Suboptimal: 0°C - 15°C or 30°C - 50°C");
+        suboptimalLabel.setFont(new Font("Malgun Gothic", 14));
+        suboptimalLabel.setTextFill(Color.RED);
 
-        Label optimalTempLabel = new Label("Optimal Temperature: 18 - 25 °C");
-        optimalTempLabel.setFont(new Font("Malgun Gothic", 14));
-        optimalTempLabel.setTextFill(Color.web("#ffa500"));
+        Label satisfactoryLabel = new Label("Satisfactory: 15°C - 20°C or 25°C - 30°C");
+        satisfactoryLabel.setFont(new Font("Malgun Gothic", 14));
+        satisfactoryLabel.setTextFill(Color.web("#ffcc00"));
 
-        Label highTempLabel = new Label("High Temperature: 30 - 35 °C");
-        highTempLabel.setFont(new Font("Malgun Gothic", 14));
-        highTempLabel.setTextFill(Color.web("#006400"));
+        Label optimalLabel = new Label("Optimal: 20°C - 25°C");
+        optimalLabel.setFont(new Font("Malgun Gothic", 14));
+        optimalLabel.setTextFill(Color.web("#28a745"));
 
-        indicatorBox.getChildren().addAll(lowTempLabel, optimalTempLabel, highTempLabel);
+        indicatorBox.getChildren().addAll(suboptimalLabel, satisfactoryLabel, optimalLabel);
 
         // Assemble card layout
-        card.getChildren().addAll(titleLabel, circle, optimalLabel, measurementLabel, indicatorBox);
+        card.getChildren().addAll(titleLabel, circle, statusLabel, measurementLabel, indicatorBox);
         return card;
+    }
+
+    // Method to get temperature - implement according to your data source
+    private double getTemperature() {
+        // TODO: Replace with actual implementation to get temperature data
+        // For testing, you could return different values to see different states
+        return 1; // Example value - optimal range
     }
 
     private HBox createNavButton(String text, String iconPath, Runnable onClickAction) {
