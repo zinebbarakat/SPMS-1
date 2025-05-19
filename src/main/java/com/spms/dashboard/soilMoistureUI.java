@@ -11,6 +11,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import com.spms.login.DatabaseHelper;
 
 public class soilMoistureUI extends Application {
 
@@ -64,8 +65,7 @@ public class soilMoistureUI extends Application {
         VBox centerVBox = new VBox(20);
         centerVBox.setAlignment(Pos.TOP_CENTER);
         centerVBox.setStyle("-fx-padding: 20;");
-
-        centerVBox.getChildren().add(createSoilMoistureCard());
+        centerVBox.getChildren().add(createMoistureCard());
 
         HBox topMenu = new HBox();
         topMenu.setStyle("-fx-padding: 10 20; -fx-background-color: transparent;");
@@ -75,7 +75,6 @@ public class soilMoistureUI extends Application {
         myAccountMenu.setFont(new Font("Malgun Gothic Bold", 18));
         myAccountMenu.setStyle("-fx-background-color: #f2e8cf; -fx-text-fill: #dda15e;");
         myAccountMenu.getItems().add(new MenuItem("Logout"));
-
         topMenu.getChildren().add(myAccountMenu);
 
         borderPane.setLeft(leftVBox);
@@ -90,77 +89,63 @@ public class soilMoistureUI extends Application {
         primaryStage.show();
     }
 
-    private VBox createSoilMoistureCard() {
+    private VBox createMoistureCard() {
         VBox card = new VBox(20);
         card.setAlignment(Pos.TOP_CENTER);
         card.setPrefSize(600, 400);
         card.setStyle("-fx-background-color: #fef9e7; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);");
 
-        // Title
         Label titleLabel = new Label("Soil Moisture");
         titleLabel.setFont(new Font("Malgun Gothic Bold", 28));
-        titleLabel.setTextFill(Color.web("#a56336"));
+        titleLabel.setTextFill(Color.web("#3f88c5"));
 
-        // Get humidity value from your data source
-        double humidity = getHumidity();
+        double moisture = DatabaseHelper.getLatestMoistureForUser(11);
 
-        // Circle and status indicators
         Circle circle = new Circle(30);
         Label statusLabel = new Label();
         statusLabel.setFont(new Font("Malgun Gothic Bold", 20));
 
-        // Set color and text based on humidity range
         Color statusColor;
         String statusText;
 
-        if ((humidity >= 0 && humidity < 30) || (humidity > 70 && humidity <= 100)) {
+        if (moisture < 30) {
             statusColor = Color.RED;
-            statusText = "SUBOPTIMAL";
-        } else if ((humidity >= 30 && humidity < 40) || (humidity > 60 && humidity <= 70)) {
-            statusColor = Color.web("#ffcc00"); // Yellow
+            statusText = "DRY";
+        } else if (moisture <= 60) {
+            statusColor = Color.web("#ffcc00");
             statusText = "SATISFACTORY";
-        } else { // Between 40 and 60
-            statusColor = Color.web("#28a745"); // Green
-            statusText = "OPTIMAL";
+        } else {
+            statusColor = Color.web("#28a745");
+            statusText = "MOIST";
         }
 
         circle.setFill(statusColor);
         statusLabel.setText(statusText);
         statusLabel.setTextFill(statusColor);
 
-        // Current measurement display
-        Label measurementLabel = new Label(String.format("CURRENT MEASUREMENT: %.1f %%", humidity));
+        Label measurementLabel = new Label(String.format("CURRENT MEASUREMENT: %.1f %%", moisture));
         measurementLabel.setFont(new Font("Malgun Gothic Bold", 18));
         measurementLabel.setTextFill(Color.web("#666666"));
 
-        // Indicator box with ranges
         VBox indicatorBox = new VBox(20);
         indicatorBox.setAlignment(Pos.CENTER);
         indicatorBox.setStyle("-fx-background-color: #f7f6f2; -fx-padding: 30; -fx-border-radius: 10; -fx-background-radius: 10; -fx-border-color: #ccc;");
 
-        Label suboptimalLabel = new Label("Suboptimal: 0% - 30% or 70% - 100%");
-        suboptimalLabel.setFont(new Font("Malgun Gothic", 14));
-        suboptimalLabel.setTextFill(Color.RED);
+        Label dry = new Label("DRY: < 30%");
+        dry.setTextFill(Color.RED);
+        Label sat = new Label("SATISFACTORY: 30% – 60%");
+        sat.setTextFill(Color.web("#ffcc00"));
+        Label moist = new Label("MOIST: > 60%");
+        moist.setTextFill(Color.web("#28a745"));
 
-        Label satisfactoryLabel = new Label("Satisfactory: 30% - 40% or 60% - 70%");
-        satisfactoryLabel.setFont(new Font("Malgun Gothic", 14));
-        satisfactoryLabel.setTextFill(Color.web("#ffcc00"));
+        dry.setFont(new Font(14));
+        sat.setFont(new Font(14));
+        moist.setFont(new Font(14));
 
-        Label optimalLabel = new Label("Optimal: 40% - 60%");
-        optimalLabel.setFont(new Font("Malgun Gothic", 14));
-        optimalLabel.setTextFill(Color.web("#28a745"));
-
-        indicatorBox.getChildren().addAll(suboptimalLabel, satisfactoryLabel, optimalLabel);
+        indicatorBox.getChildren().addAll(dry, sat, moist);
 
         card.getChildren().addAll(titleLabel, circle, statusLabel, measurementLabel, indicatorBox);
         return card;
-    }
-
-    // Method to get humidity - implement according to your data source
-    private double getHumidity() {
-        // TODO: Replace with actual implementation to get humidity data
-        // For testing, you could return different values to see different states
-        return 60; // Example value - optimal range
     }
 
     private HBox createNavButton(String text, String iconPath, Runnable onClickAction) {

@@ -11,6 +11,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import com.spms.login.DatabaseHelper;
 
 public class temperatureUI extends Application {
 
@@ -109,7 +110,6 @@ public class temperatureUI extends Application {
         titleLabel.setFont(new Font("Malgun Gothic Bold", 28));
         titleLabel.setTextFill(Color.web("#a56336"));
 
-        // Get temperature value from your data source
         double temperature = getTemperature();
 
         // Circle and status indicators
@@ -117,7 +117,6 @@ public class temperatureUI extends Application {
         Label statusLabel = new Label();
         statusLabel.setFont(new Font("Malgun Gothic Bold", 20));
 
-        // Set color and text based on temperature range
         Color statusColor;
         String statusText;
 
@@ -125,10 +124,10 @@ public class temperatureUI extends Application {
             statusColor = Color.RED;
             statusText = "SUBOPTIMAL";
         } else if ((temperature >= 15 && temperature < 20) || (temperature >= 25 && temperature <= 30)) {
-            statusColor = Color.web("#ffcc00"); // Yellow
+            statusColor = Color.web("#ffcc00");
             statusText = "SATISFACTORY";
-        } else { // Between 20 and 25
-            statusColor = Color.web("#28a745"); // Green
+        } else {
+            statusColor = Color.web("#28a745");
             statusText = "OPTIMAL";
         }
 
@@ -136,12 +135,10 @@ public class temperatureUI extends Application {
         statusLabel.setText(statusText);
         statusLabel.setTextFill(statusColor);
 
-        // Current measurement display
         Label measurementLabel = new Label(String.format("CURRENT MEASUREMENT: %.1f °C", temperature));
         measurementLabel.setFont(new Font("Malgun Gothic Bold", 18));
         measurementLabel.setTextFill(Color.web("#666666"));
 
-        // Temperature range indicators
         VBox indicatorBox = new VBox(20);
         indicatorBox.setAlignment(Pos.CENTER);
         indicatorBox.setStyle("-fx-background-color: #f7f6f2; -fx-padding: 30; -fx-border-radius: 10; -fx-background-radius: 10; -fx-border-color: #ccc;");
@@ -160,16 +157,12 @@ public class temperatureUI extends Application {
 
         indicatorBox.getChildren().addAll(suboptimalLabel, satisfactoryLabel, optimalLabel);
 
-        // Assemble card layout
         card.getChildren().addAll(titleLabel, circle, statusLabel, measurementLabel, indicatorBox);
         return card;
     }
 
-    // Method to get temperature - implement according to your data source
     private double getTemperature() {
-        // TODO: Replace with actual implementation to get temperature data
-        // For testing, you could return different values to see different states
-        return 1; // Example value - optimal range
+        return DatabaseHelper.getLatestTemperatureForUser(11); // Replace 11 if needed
     }
 
     private HBox createNavButton(String text, String iconPath, Runnable onClickAction) {
@@ -187,9 +180,7 @@ public class temperatureUI extends Application {
 
         hBox.getChildren().addAll(icon, label);
         hBox.setOnMouseClicked(event -> {
-            if (onClickAction != null) {
-                onClickAction.run();
-            }
+            if (onClickAction != null) onClickAction.run();
         });
         return hBox;
     }
