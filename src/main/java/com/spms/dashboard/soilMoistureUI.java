@@ -1,5 +1,7 @@
 package com.spms.dashboard;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -11,9 +13,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import com.spms.login.DatabaseHelper;
-import com.spms.session.Session; // ✅ Added import
+import com.spms.session.Session;
 
 public class soilMoistureUI extends Application {
 
@@ -101,32 +104,11 @@ public class soilMoistureUI extends Application {
         titleLabel.setFont(new Font("Malgun Gothic Bold", 28));
         titleLabel.setTextFill(Color.web("#e3b505"));
 
-        // ✅ Now user-specific data
-        double moisture = DatabaseHelper.getLatestMoistureForUser(Session.getUserId());
-
         Circle circle = new Circle(30);
         Label statusLabel = new Label();
         statusLabel.setFont(new Font("Malgun Gothic Bold", 20));
 
-        Color statusColor;
-        String statusText;
-
-        if ((moisture >= 0 && moisture < 30) || (moisture > 70 && moisture <= 100)) {
-            statusColor = Color.RED;
-            statusText = "SUBOPTIMAL";
-        } else if ((moisture >= 30 && moisture < 40) || (moisture > 60 && moisture <= 70)) {
-            statusColor = Color.web("#ffcc00");
-            statusText = "SATISFACTORY";
-        } else {
-            statusColor = Color.web("#28a745");
-            statusText = "OPTIMAL";
-        }
-
-        circle.setFill(statusColor);
-        statusLabel.setText(statusText);
-        statusLabel.setTextFill(statusColor);
-
-        Label measurementLabel = new Label(String.format("CURRENT MEASUREMENT: %.1f %%", moisture));
+        Label measurementLabel = new Label();
         measurementLabel.setFont(new Font("Malgun Gothic Bold", 18));
         measurementLabel.setTextFill(Color.web("#666666"));
 
@@ -146,6 +128,32 @@ public class soilMoistureUI extends Application {
         moist.setFont(new Font(14));
 
         indicatorBox.getChildren().addAll(dry, sat, moist);
+
+        // ✅ Auto-refresh every 5 seconds
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
+            double moisture = DatabaseHelper.getLatestMoistureForUser(Session.getUserId());
+
+            Color statusColor;
+            String statusText;
+
+            if ((moisture >= 0 && moisture < 30) || (moisture > 70 && moisture <= 100)) {
+                statusColor = Color.RED;
+                statusText = "SUBOPTIMAL";
+            } else if ((moisture >= 30 && moisture < 40) || (moisture > 60 && moisture <= 70)) {
+                statusColor = Color.web("#ffcc00");
+                statusText = "SATISFACTORY";
+            } else {
+                statusColor = Color.web("#28a745");
+                statusText = "OPTIMAL";
+            }
+
+            circle.setFill(statusColor);
+            statusLabel.setText(statusText);
+            statusLabel.setTextFill(statusColor);
+            measurementLabel.setText(String.format("CURRENT MEASUREMENT: %.1f %%", moisture));
+        }));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
 
         card.getChildren().addAll(titleLabel, circle, statusLabel, measurementLabel, indicatorBox);
         return card;

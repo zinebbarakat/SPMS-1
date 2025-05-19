@@ -1,5 +1,7 @@
 package com.spms.dashboard;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -11,9 +13,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import com.spms.login.DatabaseHelper;
-import com.spms.session.Session; // ✅ NEW IMPORT
+import com.spms.session.Session;
 
 public class lightUI extends Application {
 
@@ -101,23 +104,10 @@ public class lightUI extends Application {
         titleLabel.setFont(new Font("Malgun Gothic Bold", 28));
         titleLabel.setTextFill(Color.web("#e3b505"));
 
-        int lightStatus = (int) getLight(); // Expected to return 0 or 1
-
         Circle circle = new Circle(30);
         Label statusLabel = new Label();
         statusLabel.setFont(new Font("Malgun Gothic Bold", 24));
 
-        if (lightStatus == 1) {
-            circle.setFill(Color.web("#28a745")); // Green
-            statusLabel.setText("GOOD LIGHT");
-            statusLabel.setTextFill(Color.web("#28a745"));
-        } else {
-            circle.setFill(Color.RED);
-            statusLabel.setText("NO LIGHT");
-            statusLabel.setTextFill(Color.RED);
-        }
-
-        // Indicator box for legend
         VBox indicatorBox = new VBox(10);
         indicatorBox.setAlignment(Pos.CENTER);
         indicatorBox.setStyle("-fx-background-color: #f7f6f2; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10; -fx-border-color: #ccc;");
@@ -132,12 +122,28 @@ public class lightUI extends Application {
 
         indicatorBox.getChildren().addAll(onLabel, offLabel);
 
+        // ✅ Auto-refresh every 5 seconds
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
+            int lightStatus = (int) getLight();
+
+            if (lightStatus == 1) {
+                circle.setFill(Color.web("#28a745"));
+                statusLabel.setText("GOOD LIGHT");
+                statusLabel.setTextFill(Color.web("#28a745"));
+            } else {
+                circle.setFill(Color.RED);
+                statusLabel.setText("NO LIGHT");
+                statusLabel.setTextFill(Color.RED);
+            }
+        }));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
+
         card.getChildren().addAll(titleLabel, circle, statusLabel, indicatorBox);
         return card;
     }
 
     private double getLight() {
-        // ✅ Updated: get data for the current user
         double rawLight = DatabaseHelper.getLatestLightForUser(Session.getUserId());
         return rawLight > 0 ? 1 : 0;
     }

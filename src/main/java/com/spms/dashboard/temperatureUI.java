@@ -1,5 +1,8 @@
 package com.spms.dashboard;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -11,10 +14,16 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+
 import com.spms.login.DatabaseHelper;
-import com.spms.session.Session; // ✅ NEW import
+import com.spms.session.Session;
 
 public class temperatureUI extends Application {
+
+    private Circle statusCircle;
+    private Label statusLabel;
+    private Label measurementLabel;
 
     public static void main(String[] args) {
         launch(args);
@@ -88,6 +97,11 @@ public class temperatureUI extends Application {
         primaryStage.setScene(scene);
         primaryStage.setTitle("Temperature Dashboard");
         primaryStage.show();
+
+        // 🔁 Start auto-update
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), e -> updateTemperature()));
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
     }
 
     private VBox createTemperatureCard() {
@@ -100,31 +114,11 @@ public class temperatureUI extends Application {
         titleLabel.setFont(new Font("Malgun Gothic Bold", 28));
         titleLabel.setTextFill(Color.web("#e3b505"));
 
-        double temperature = getTemperature();
-
-        Circle circle = new Circle(30);
-        Label statusLabel = new Label();
+        statusCircle = new Circle(30);
+        statusLabel = new Label();
         statusLabel.setFont(new Font("Malgun Gothic Bold", 20));
 
-        Color statusColor;
-        String statusText;
-
-        if ((temperature >= 0 && temperature < 15) || (temperature > 30 && temperature <= 50)) {
-            statusColor = Color.RED;
-            statusText = "SUBOPTIMAL";
-        } else if ((temperature >= 15 && temperature < 20) || (temperature >= 25 && temperature <= 30)) {
-            statusColor = Color.web("#ffcc00");
-            statusText = "SATISFACTORY";
-        } else {
-            statusColor = Color.web("#28a745");
-            statusText = "OPTIMAL";
-        }
-
-        circle.setFill(statusColor);
-        statusLabel.setText(statusText);
-        statusLabel.setTextFill(statusColor);
-
-        Label measurementLabel = new Label(String.format("CURRENT MEASUREMENT: %.1f °C", temperature));
+        measurementLabel = new Label();
         measurementLabel.setFont(new Font("Malgun Gothic Bold", 18));
         measurementLabel.setTextFill(Color.web("#666666"));
 
@@ -146,12 +140,37 @@ public class temperatureUI extends Application {
 
         indicatorBox.getChildren().addAll(suboptimalLabel, satisfactoryLabel, optimalLabel);
 
-        card.getChildren().addAll(titleLabel, circle, statusLabel, measurementLabel, indicatorBox);
+        card.getChildren().addAll(titleLabel, statusCircle, statusLabel, measurementLabel, indicatorBox);
+
+        updateTemperature(); // Initial fill
         return card;
     }
 
+    private void updateTemperature() {
+        double temperature = getTemperature();
+
+        Color statusColor;
+        String statusText;
+
+        if ((temperature >= 0 && temperature < 15) || (temperature > 30 && temperature <= 50)) {
+            statusColor = Color.RED;
+            statusText = "SUBOPTIMAL";
+        } else if ((temperature >= 15 && temperature < 20) || (temperature >= 25 && temperature <= 30)) {
+            statusColor = Color.web("#ffcc00");
+            statusText = "SATISFACTORY";
+        } else {
+            statusColor = Color.web("#28a745");
+            statusText = "OPTIMAL";
+        }
+
+        statusCircle.setFill(statusColor);
+        statusLabel.setText(statusText);
+        statusLabel.setTextFill(statusColor);
+
+        measurementLabel.setText(String.format("CURRENT MEASUREMENT: %.1f °C", temperature));
+    }
+
     private double getTemperature() {
-        // ✅ Now retrieves data for the logged-in user
         return DatabaseHelper.getLatestTemperatureForUser(Session.getUserId());
     }
 
