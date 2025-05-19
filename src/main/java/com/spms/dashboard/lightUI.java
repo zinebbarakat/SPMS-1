@@ -95,61 +95,49 @@ public class lightUI extends Application {
         card.setPrefSize(600, 400);
         card.setStyle("-fx-background-color: #fef9e7; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);");
 
-        Label titleLabel = new Label("Light");
+        Label titleLabel = new Label("Light Status");
         titleLabel.setFont(new Font("Malgun Gothic Bold", 28));
         titleLabel.setTextFill(Color.web("#e3b505"));
 
-        double light = getLight();
+        int lightStatus = (int) getLight(); // Expected to return 0 or 1
 
         Circle circle = new Circle(30);
         Label statusLabel = new Label();
-        statusLabel.setFont(new Font("Malgun Gothic Bold", 20));
+        statusLabel.setFont(new Font("Malgun Gothic Bold", 24));
 
-        Color statusColor;
-        String statusText;
-
-        if (light < 200) {
-            statusColor = Color.RED;
-            statusText = "LOW LIGHT";
-        } else if (light <= 500) {
-            statusColor = Color.web("#ffcc00");
-            statusText = "MEDIUM LIGHT";
+        if (lightStatus == 1) {
+            circle.setFill(Color.web("#28a745")); // Green
+            statusLabel.setText("GOOD LIGHT");
+            statusLabel.setTextFill(Color.web("#28a745"));
         } else {
-            statusColor = Color.web("#28a745");
-            statusText = "GOOD LIGHT";
+            circle.setFill(Color.RED);
+            statusLabel.setText("NO LIGHT");
+            statusLabel.setTextFill(Color.RED);
         }
 
-        circle.setFill(statusColor);
-        statusLabel.setText(statusText);
-        statusLabel.setTextFill(statusColor);
-
-        Label measurementLabel = new Label(String.format("CURRENT MEASUREMENT: %.1f lx", light));
-        measurementLabel.setFont(new Font("Malgun Gothic Bold", 18));
-        measurementLabel.setTextFill(Color.web("#666666"));
-
-        VBox indicatorBox = new VBox(20);
+        // Indicator box for legend
+        VBox indicatorBox = new VBox(10);
         indicatorBox.setAlignment(Pos.CENTER);
-        indicatorBox.setStyle("-fx-background-color: #f7f6f2; -fx-padding: 30; -fx-border-radius: 10; -fx-background-radius: 10; -fx-border-color: #ccc;");
+        indicatorBox.setStyle("-fx-background-color: #f7f6f2; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10; -fx-border-color: #ccc;");
 
-        Label low = new Label("LOW: < 200 lx");
-        low.setTextFill(Color.RED);
-        Label med = new Label("MEDIUM: 200 lx – 500 lx");
-        med.setTextFill(Color.web("#ffcc00"));
-        Label good = new Label("GOOD: > 500 lx");
-        good.setTextFill(Color.web("#28a745"));
+        Label onLabel = new Label("GOOD LIGHT (ON): Light detected");
+        onLabel.setTextFill(Color.web("#28a745"));
+        onLabel.setFont(new Font(14));
 
-        low.setFont(new Font(14));
-        med.setFont(new Font(14));
-        good.setFont(new Font(14));
+        Label offLabel = new Label("NO LIGHT (OFF): No light detected");
+        offLabel.setTextFill(Color.RED);
+        offLabel.setFont(new Font(14));
 
-        indicatorBox.getChildren().addAll(low, med, good);
+        indicatorBox.getChildren().addAll(onLabel, offLabel);
 
-        card.getChildren().addAll(titleLabel, circle, statusLabel, measurementLabel, indicatorBox);
+        card.getChildren().addAll(titleLabel, circle, statusLabel, indicatorBox);
         return card;
     }
 
     private double getLight() {
-        return DatabaseHelper.getLatestLightForUser(11);
+        // Expected to return 1 for ON, 0 for OFF
+        double rawLight = DatabaseHelper.getLatestLightForUser(12);
+        return rawLight > 0 ? 1 : 0;
     }
 
     private HBox createNavButton(String text, String iconPath, Runnable onClickAction) {
