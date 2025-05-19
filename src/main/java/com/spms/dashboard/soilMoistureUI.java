@@ -11,7 +11,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+
 import com.spms.login.DatabaseHelper;
+import com.spms.session.Session; // ✅ Added import
 
 public class soilMoistureUI extends Application {
 
@@ -99,7 +101,8 @@ public class soilMoistureUI extends Application {
         titleLabel.setFont(new Font("Malgun Gothic Bold", 28));
         titleLabel.setTextFill(Color.web("#e3b505"));
 
-        double moisture = DatabaseHelper.getLatestMoistureForUser(11);
+        // ✅ Now user-specific data
+        double moisture = DatabaseHelper.getLatestMoistureForUser(Session.getUserId());
 
         Circle circle = new Circle(30);
         Label statusLabel = new Label();
@@ -112,10 +115,10 @@ public class soilMoistureUI extends Application {
             statusColor = Color.RED;
             statusText = "SUBOPTIMAL";
         } else if ((moisture >= 30 && moisture < 40) || (moisture > 60 && moisture <= 70)) {
-            statusColor = Color.web("#ffcc00"); // Yellow
+            statusColor = Color.web("#ffcc00");
             statusText = "SATISFACTORY";
-        } else { // Between 40 and 60
-            statusColor = Color.web("#28a745"); // Green
+        } else {
+            statusColor = Color.web("#28a745");
             statusText = "OPTIMAL";
         }
 

@@ -12,6 +12,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import com.spms.login.DatabaseHelper;
+import com.spms.session.Session; // ✅ NEW import
 
 public class temperatureUI extends Application {
 
@@ -21,11 +22,9 @@ public class temperatureUI extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        // AnchorPane as root
         AnchorPane anchorPane = new AnchorPane();
         anchorPane.setPrefSize(920, 620);
 
-        // BorderPane for main layout
         BorderPane borderPane = new BorderPane();
         borderPane.setPrefSize(920, 620);
         AnchorPane.setBottomAnchor(borderPane, 0.0);
@@ -33,13 +32,11 @@ public class temperatureUI extends Application {
         AnchorPane.setRightAnchor(borderPane, 0.0);
         AnchorPane.setTopAnchor(borderPane, 0.0);
 
-        // Left VBox for navigation menu
         VBox leftVBox = new VBox(10);
         leftVBox.setPrefSize(250, 620);
         leftVBox.setStyle("-fx-background-color: #386641;");
         leftVBox.setAlignment(Pos.TOP_CENTER);
 
-        // SPMS logo and title
         VBox logoContainer = new VBox();
         logoContainer.setAlignment(Pos.CENTER);
         logoContainer.setSpacing(10);
@@ -66,14 +63,11 @@ public class temperatureUI extends Application {
 
         leftVBox.getChildren().addAll(logoContainer, navContainer);
 
-        // Center layout for main content
         VBox centerVBox = new VBox(20);
         centerVBox.setAlignment(Pos.TOP_CENTER);
         centerVBox.setStyle("-fx-padding: 20;");
-
         centerVBox.getChildren().add(createTemperatureCard());
 
-        // Top menu bar
         HBox topMenu = new HBox();
         topMenu.setStyle("-fx-padding: 10 20; -fx-background-color: transparent;");
         topMenu.setAlignment(Pos.CENTER_RIGHT);
@@ -85,14 +79,11 @@ public class temperatureUI extends Application {
 
         topMenu.getChildren().add(myAccountMenu);
 
-        // Set the layout in BorderPane
         borderPane.setLeft(leftVBox);
         borderPane.setCenter(centerVBox);
         borderPane.setTop(topMenu);
-
         anchorPane.getChildren().add(borderPane);
 
-        // Scene and Stage
         Scene scene = new Scene(anchorPane);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Temperature Dashboard");
@@ -105,14 +96,12 @@ public class temperatureUI extends Application {
         card.setPrefSize(600, 400);
         card.setStyle("-fx-background-color: #fef9e7; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);");
 
-        // Title
         Label titleLabel = new Label("Temperature");
         titleLabel.setFont(new Font("Malgun Gothic Bold", 28));
         titleLabel.setTextFill(Color.web("#e3b505"));
 
         double temperature = getTemperature();
 
-        // Circle and status indicators
         Circle circle = new Circle(30);
         Label statusLabel = new Label();
         statusLabel.setFont(new Font("Malgun Gothic Bold", 20));
@@ -162,7 +151,8 @@ public class temperatureUI extends Application {
     }
 
     private double getTemperature() {
-        return DatabaseHelper.getLatestTemperatureForUser(11); // Replace 11 if needed
+        // ✅ Now retrieves data for the logged-in user
+        return DatabaseHelper.getLatestTemperatureForUser(Session.getUserId());
     }
 
     private HBox createNavButton(String text, String iconPath, Runnable onClickAction) {

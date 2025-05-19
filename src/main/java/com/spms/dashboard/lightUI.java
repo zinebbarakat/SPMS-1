@@ -11,7 +11,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+
 import com.spms.login.DatabaseHelper;
+import com.spms.session.Session; // ✅ NEW IMPORT
 
 public class lightUI extends Application {
 
@@ -135,8 +137,8 @@ public class lightUI extends Application {
     }
 
     private double getLight() {
-        // Expected to return 1 for ON, 0 for OFF
-        double rawLight = DatabaseHelper.getLatestLightForUser(12);
+        // ✅ Updated: get data for the current user
+        double rawLight = DatabaseHelper.getLatestLightForUser(Session.getUserId());
         return rawLight > 0 ? 1 : 0;
     }
 
