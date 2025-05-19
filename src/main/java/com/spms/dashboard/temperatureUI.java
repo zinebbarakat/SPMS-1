@@ -108,7 +108,7 @@ public class temperatureUI extends Application {
         // Title
         Label titleLabel = new Label("Temperature");
         titleLabel.setFont(new Font("Malgun Gothic Bold", 28));
-        titleLabel.setTextFill(Color.web("#a56336"));
+        titleLabel.setTextFill(Color.web("#e3b505"));
 
         double temperature = getTemperature();
 

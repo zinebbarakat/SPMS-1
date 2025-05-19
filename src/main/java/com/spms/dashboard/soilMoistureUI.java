@@ -97,7 +97,7 @@ public class soilMoistureUI extends Application {
 
         Label titleLabel = new Label("Soil Moisture");
         titleLabel.setFont(new Font("Malgun Gothic Bold", 28));
-        titleLabel.setTextFill(Color.web("#3f88c5"));
+        titleLabel.setTextFill(Color.web("#e3b505"));
 
         double moisture = DatabaseHelper.getLatestMoistureForUser(11);
 
@@ -108,15 +108,15 @@ public class soilMoistureUI extends Application {
         Color statusColor;
         String statusText;
 
-        if (moisture < 30) {
+        if ((moisture >= 0 && moisture < 30) || (moisture > 70 && moisture <= 100)) {
             statusColor = Color.RED;
-            statusText = "DRY";
-        } else if (moisture <= 60) {
-            statusColor = Color.web("#ffcc00");
+            statusText = "SUBOPTIMAL";
+        } else if ((moisture >= 30 && moisture < 40) || (moisture > 60 && moisture <= 70)) {
+            statusColor = Color.web("#ffcc00"); // Yellow
             statusText = "SATISFACTORY";
-        } else {
-            statusColor = Color.web("#28a745");
-            statusText = "MOIST";
+        } else { // Between 40 and 60
+            statusColor = Color.web("#28a745"); // Green
+            statusText = "OPTIMAL";
         }
 
         circle.setFill(statusColor);
@@ -132,11 +132,11 @@ public class soilMoistureUI extends Application {
         indicatorBox.setStyle("-fx-background-color: #f7f6f2; -fx-padding: 30; -fx-border-radius: 10; -fx-background-radius: 10; -fx-border-color: #ccc;");
 
         Label dry = new Label("DRY: < 30%");
-        dry.setTextFill(Color.RED);
+        dry.setTextFill(Color.web("#8b4513"));
         Label sat = new Label("SATISFACTORY: 30% – 60%");
-        sat.setTextFill(Color.web("#ffcc00"));
+        sat.setTextFill(Color.web("#28a745"));
         Label moist = new Label("MOIST: > 60%");
-        moist.setTextFill(Color.web("#28a745"));
+        moist.setTextFill(Color.web("#0062cc"));
 
         dry.setFont(new Font(14));
         sat.setFont(new Font(14));
