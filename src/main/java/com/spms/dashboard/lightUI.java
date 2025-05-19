@@ -1,7 +1,6 @@
 package com.spms.dashboard;
 
 import javafx.application.Application;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -12,6 +11,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import com.spms.login.DatabaseHelper;
 
 public class lightUI extends Application {
 
@@ -21,43 +21,38 @@ public class lightUI extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        // Root Pane
-        AnchorPane rootPane = new AnchorPane();
-        rootPane.setPrefSize(920, 620);
+        AnchorPane anchorPane = new AnchorPane();
+        anchorPane.setPrefSize(920, 620);
 
-        // BorderPane for layout
-        BorderPane mainLayout = new BorderPane();
-        AnchorPane.setTopAnchor(mainLayout, 0.0);
-        AnchorPane.setBottomAnchor(mainLayout, 0.0);
-        AnchorPane.setLeftAnchor(mainLayout, 0.0);
-        AnchorPane.setRightAnchor(mainLayout, 0.0);
+        BorderPane borderPane = new BorderPane();
+        borderPane.setPrefSize(920, 620);
+        AnchorPane.setBottomAnchor(borderPane, 0.0);
+        AnchorPane.setLeftAnchor(borderPane, 0.0);
+        AnchorPane.setRightAnchor(borderPane, 0.0);
+        AnchorPane.setTopAnchor(borderPane, 0.0);
 
-        // Left Navigation Menu
-        VBox navigationMenu = new VBox(10);
-        navigationMenu.setPrefWidth(250);
-        navigationMenu.setStyle("-fx-background-color: #386641;");
-        navigationMenu.setAlignment(Pos.TOP_CENTER);
-        navigationMenu.setPadding(new Insets(20));
+        VBox leftVBox = new VBox(10);
+        leftVBox.setPrefSize(250, 620);
+        leftVBox.setStyle("-fx-background-color: #386641;");
+        leftVBox.setAlignment(Pos.TOP_CENTER);
 
-        // SPMS Logo and Title
-        VBox logoContainer = new VBox(10);
+        VBox logoContainer = new VBox();
         logoContainer.setAlignment(Pos.CENTER);
-
-        Label logoLabel = new Label("SPMS");
-        logoLabel.setFont(new Font("Malgun Gothic Bold", 42));
-        logoLabel.setTextFill(Color.web("#a7c957"));
+        logoContainer.setSpacing(10);
+        Label titleLabel = new Label("SPMS");
+        titleLabel.setFont(new Font("Malgun Gothic Bold", 42));
+        titleLabel.setTextFill(Color.web("#a7c957"));
 
         ImageView logoImage = new ImageView(loadImage("leaves.png"));
         logoImage.setFitWidth(60);
         logoImage.setFitHeight(60);
+        logoContainer.getChildren().addAll(logoImage, titleLabel);
 
-        logoContainer.getChildren().addAll(logoImage, logoLabel);
+        VBox navContainer = new VBox(15);
+        navContainer.setAlignment(Pos.TOP_LEFT);
+        navContainer.setStyle("-fx-padding: 20;");
 
-        // Navigation Buttons
-        VBox navButtons = new VBox(15);
-        navButtons.setAlignment(Pos.TOP_LEFT);
-
-        navButtons.getChildren().addAll(
+        navContainer.getChildren().addAll(
                 createNavButton("Dashboard", "dashboard.png", DashboardLogic::openDashboard),
                 createHighlightedNavButton("Light", "sun.png"),
                 createNavButton("Temperature", "temperature.png", DashboardLogic::clickTempButton),
@@ -65,108 +60,96 @@ public class lightUI extends Application {
                 createNavButton("Settings", "settings.png", null)
         );
 
-        navigationMenu.getChildren().addAll(logoContainer, navButtons);
+        leftVBox.getChildren().addAll(logoContainer, navContainer);
 
-        // Center Content (Light Intensity Card)
-        StackPane centerContent = new StackPane();
-        centerContent.setAlignment(Pos.CENTER);
-        centerContent.setStyle("-fx-padding: 30;");
-        centerContent.getChildren().add(createLightIntensityCard());
+        VBox centerVBox = new VBox(20);
+        centerVBox.setAlignment(Pos.TOP_CENTER);
+        centerVBox.setStyle("-fx-padding: 20;");
+        centerVBox.getChildren().add(createLightCard());
 
-        // Top Menu Bar
-        HBox topMenuBar = new HBox();
-        topMenuBar.setStyle("-fx-padding: 10 20; -fx-background-color: transparent;");
-        topMenuBar.setAlignment(Pos.CENTER_RIGHT);
+        HBox topMenu = new HBox();
+        topMenu.setStyle("-fx-padding: 10 20; -fx-background-color: transparent;");
+        topMenu.setAlignment(Pos.CENTER_RIGHT);
 
-        MenuButton accountMenu = new MenuButton("My Account");
-        accountMenu.setFont(new Font("Malgun Gothic Bold", 18));
-        accountMenu.setStyle("-fx-background-color: #f2e8cf; -fx-text-fill: #dda15e;");
-        accountMenu.getItems().add(new MenuItem("Logout"));
+        MenuButton myAccountMenu = new MenuButton("My Account");
+        myAccountMenu.setFont(new Font("Malgun Gothic Bold", 18));
+        myAccountMenu.setStyle("-fx-background-color: #f2e8cf; -fx-text-fill: #dda15e;");
+        myAccountMenu.getItems().add(new MenuItem("Logout"));
+        topMenu.getChildren().add(myAccountMenu);
 
-        topMenuBar.getChildren().add(accountMenu);
+        borderPane.setLeft(leftVBox);
+        borderPane.setCenter(centerVBox);
+        borderPane.setTop(topMenu);
 
-        // Add Layouts to BorderPane
-        mainLayout.setLeft(navigationMenu);
-        mainLayout.setCenter(centerContent);
-        mainLayout.setTop(topMenuBar);
+        anchorPane.getChildren().add(borderPane);
 
-        rootPane.getChildren().add(mainLayout);
-
-        // Scene and Stage
-        Scene scene = new Scene(rootPane);
+        Scene scene = new Scene(anchorPane);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Light Dashboard");
         primaryStage.show();
     }
 
-    private VBox createLightIntensityCard() {
+    private VBox createLightCard() {
         VBox card = new VBox(20);
         card.setAlignment(Pos.TOP_CENTER);
         card.setPrefSize(600, 400);
         card.setStyle("-fx-background-color: #fef9e7; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);");
 
-        // Title
-        Label titleLabel = new Label("Light Intensity");
+        Label titleLabel = new Label("Light");
         titleLabel.setFont(new Font("Malgun Gothic Bold", 28));
-        titleLabel.setTextFill(Color.web("#a56336"));
-        VBox.setMargin(titleLabel, new Insets(0, 0, 30, 0));
+        titleLabel.setTextFill(Color.web("#e3b505"));
 
-        // Get light value from your data source
-        int light = getLightLevel();
+        double light = getLight();
 
-        // Circle indicator
         Circle circle = new Circle(30);
-
-        // Status label
         Label statusLabel = new Label();
         statusLabel.setFont(new Font("Malgun Gothic Bold", 20));
 
-        // Set color and text based on light value
         Color statusColor;
         String statusText;
 
-        if (light == 0) {
-            statusColor = Color.web("#28a745"); // Green
-            statusText = "OPTIMAL";
-        } else { // When light == 0
+        if (light < 200) {
             statusColor = Color.RED;
-            statusText = "SUBOPTIMAL";
+            statusText = "LOW LIGHT";
+        } else if (light <= 500) {
+            statusColor = Color.web("#ffcc00");
+            statusText = "MEDIUM LIGHT";
+        } else {
+            statusColor = Color.web("#28a745");
+            statusText = "GOOD LIGHT";
         }
 
         circle.setFill(statusColor);
         statusLabel.setText(statusText);
         statusLabel.setTextFill(statusColor);
 
-        // Current Measurement
-        Label measurementLabel = new Label("CURRENT MEASUREMENT: " + (light == 1 ? "ON" : "OFF"));
+        Label measurementLabel = new Label(String.format("CURRENT MEASUREMENT: %.1f lx", light));
         measurementLabel.setFont(new Font("Malgun Gothic Bold", 18));
         measurementLabel.setTextFill(Color.web("#666666"));
 
-        // Intensity Description Box
-        VBox descriptionBox = new VBox(10);
-        descriptionBox.setAlignment(Pos.CENTER);
-        descriptionBox.setStyle("-fx-background-color: #f7f6f2; -fx-padding: 15; -fx-border-radius: 10; -fx-background-radius: 10; -fx-border-color: #ccc;");
-        VBox.setMargin(descriptionBox, new Insets(20, 0, 0, 0));
+        VBox indicatorBox = new VBox(20);
+        indicatorBox.setAlignment(Pos.CENTER);
+        indicatorBox.setStyle("-fx-background-color: #f7f6f2; -fx-padding: 30; -fx-border-radius: 10; -fx-background-radius: 10; -fx-border-color: #ccc;");
 
-        Label intermediateDescLabel = new Label("Optimal: Light is ON");
-        intermediateDescLabel.setFont(new Font("Malgun Gothic", 14));
-        intermediateDescLabel.setTextFill(Color.web("#28a745"));
+        Label low = new Label("LOW: < 200 lx");
+        low.setTextFill(Color.RED);
+        Label med = new Label("MEDIUM: 200 lx – 500 lx");
+        med.setTextFill(Color.web("#ffcc00"));
+        Label good = new Label("GOOD: > 500 lx");
+        good.setTextFill(Color.web("#28a745"));
 
-        Label brightDescLabel = new Label("Suboptimal: Light is OFF");
-        brightDescLabel.setFont(new Font("Malgun Gothic", 14));
-        brightDescLabel.setTextFill(Color.RED);
+        low.setFont(new Font(14));
+        med.setFont(new Font(14));
+        good.setFont(new Font(14));
 
-        descriptionBox.getChildren().addAll(intermediateDescLabel, brightDescLabel);
+        indicatorBox.getChildren().addAll(low, med, good);
 
-        card.getChildren().addAll(titleLabel, circle, statusLabel, measurementLabel, descriptionBox);
+        card.getChildren().addAll(titleLabel, circle, statusLabel, measurementLabel, indicatorBox);
         return card;
     }
 
-    // Method to get light level - implement according to your data source
-    private int getLightLevel() {
-        // TODO: Replace with actual implementation to get light sensor data
-        // For testing, return either 0 or 1
-        return 1; // Example value - optimal
+    private double getLight() {
+        return DatabaseHelper.getLatestLightForUser(11);
     }
 
     private HBox createNavButton(String text, String iconPath, Runnable onClickAction) {
@@ -188,7 +171,6 @@ public class lightUI extends Application {
                 onClickAction.run();
             }
         });
-
         return hBox;
     }
 
