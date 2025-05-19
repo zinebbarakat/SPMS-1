@@ -1,9 +1,12 @@
 package com.spms.dashboard;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -11,6 +14,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+
+import java.sql.*;
 
 public class temperatureUI extends Application {
 
@@ -20,11 +25,9 @@ public class temperatureUI extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        // AnchorPane as root
         AnchorPane anchorPane = new AnchorPane();
         anchorPane.setPrefSize(920, 620);
 
-        // BorderPane for main layout
         BorderPane borderPane = new BorderPane();
         borderPane.setPrefSize(920, 620);
         AnchorPane.setBottomAnchor(borderPane, 0.0);
@@ -32,13 +35,11 @@ public class temperatureUI extends Application {
         AnchorPane.setRightAnchor(borderPane, 0.0);
         AnchorPane.setTopAnchor(borderPane, 0.0);
 
-        // Left VBox for navigation menu
         VBox leftVBox = new VBox(10);
         leftVBox.setPrefSize(250, 620);
         leftVBox.setStyle("-fx-background-color: #386641;");
         leftVBox.setAlignment(Pos.TOP_CENTER);
 
-        // SPMS logo and title
         VBox logoContainer = new VBox();
         logoContainer.setAlignment(Pos.CENTER);
         logoContainer.setSpacing(10);
@@ -65,14 +66,15 @@ public class temperatureUI extends Application {
 
         leftVBox.getChildren().addAll(logoContainer, navContainer);
 
-        // Center layout for main content
         VBox centerVBox = new VBox(20);
         centerVBox.setAlignment(Pos.TOP_CENTER);
         centerVBox.setStyle("-fx-padding: 20;");
 
-        centerVBox.getChildren().add(createTemperatureCard());
+        centerVBox.getChildren().addAll(
+                createTemperatureCard(),
+                createSensorDataTable()
+        );
 
-        // Top menu bar
         HBox topMenu = new HBox();
         topMenu.setStyle("-fx-padding: 10 20; -fx-background-color: transparent;");
         topMenu.setAlignment(Pos.CENTER_RIGHT);
@@ -84,14 +86,12 @@ public class temperatureUI extends Application {
 
         topMenu.getChildren().add(myAccountMenu);
 
-        // Set the layout in BorderPane
         borderPane.setLeft(leftVBox);
         borderPane.setCenter(centerVBox);
         borderPane.setTop(topMenu);
 
         anchorPane.getChildren().add(borderPane);
 
-        // Scene and Stage
         Scene scene = new Scene(anchorPane);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Temperature Dashboard");
@@ -104,20 +104,16 @@ public class temperatureUI extends Application {
         card.setPrefSize(600, 400);
         card.setStyle("-fx-background-color: #fef9e7; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);");
 
-        // Title
         Label titleLabel = new Label("Temperature");
         titleLabel.setFont(new Font("Malgun Gothic Bold", 28));
         titleLabel.setTextFill(Color.web("#a56336"));
 
-        // Get temperature value from your data source
         double temperature = getTemperature();
 
-        // Circle and status indicators
         Circle circle = new Circle(30);
         Label statusLabel = new Label();
         statusLabel.setFont(new Font("Malgun Gothic Bold", 20));
 
-        // Set color and text based on temperature range
         Color statusColor;
         String statusText;
 
@@ -125,10 +121,10 @@ public class temperatureUI extends Application {
             statusColor = Color.RED;
             statusText = "SUBOPTIMAL";
         } else if ((temperature >= 15 && temperature < 20) || (temperature >= 25 && temperature <= 30)) {
-            statusColor = Color.web("#ffcc00"); // Yellow
+            statusColor = Color.web("#ffcc00");
             statusText = "SATISFACTORY";
-        } else { // Between 20 and 25
-            statusColor = Color.web("#28a745"); // Green
+        } else {
+            statusColor = Color.web("#28a745");
             statusText = "OPTIMAL";
         }
 
@@ -136,12 +132,10 @@ public class temperatureUI extends Application {
         statusLabel.setText(statusText);
         statusLabel.setTextFill(statusColor);
 
-        // Current measurement display
         Label measurementLabel = new Label(String.format("CURRENT MEASUREMENT: %.1f °C", temperature));
         measurementLabel.setFont(new Font("Malgun Gothic Bold", 18));
         measurementLabel.setTextFill(Color.web("#666666"));
 
-        // Temperature range indicators
         VBox indicatorBox = new VBox(20);
         indicatorBox.setAlignment(Pos.CENTER);
         indicatorBox.setStyle("-fx-background-color: #f7f6f2; -fx-padding: 30; -fx-border-radius: 10; -fx-background-radius: 10; -fx-border-color: #ccc;");
@@ -159,17 +153,63 @@ public class temperatureUI extends Application {
         optimalLabel.setTextFill(Color.web("#28a745"));
 
         indicatorBox.getChildren().addAll(suboptimalLabel, satisfactoryLabel, optimalLabel);
-
-        // Assemble card layout
         card.getChildren().addAll(titleLabel, circle, statusLabel, measurementLabel, indicatorBox);
         return card;
     }
 
-    // Method to get temperature - implement according to your data source
+    private TableView<SensorRecord> createSensorDataTable() {
+        TableView<SensorRecord> tableView = new TableView<>();
+        ObservableList<SensorRecord> data = FXCollections.observableArrayList();
+
+        TableColumn<SensorRecord, String> sensorCol = new TableColumn<>("Sensor Name");
+        sensorCol.setCellValueFactory(new PropertyValueFactory<>("sensorName"));
+
+        TableColumn<SensorRecord, Double> valueCol = new TableColumn<>("Value");
+        valueCol.setCellValueFactory(new PropertyValueFactory<>("measurementValue"));
+
+        TableColumn<SensorRecord, Timestamp> timeCol = new TableColumn<>("Timestamp");
+        timeCol.setCellValueFactory(new PropertyValueFactory<>("timeStamp"));
+
+        tableView.getColumns().addAll(sensorCol, valueCol, timeCol);
+        tableView.setPrefHeight(300);
+        tableView.setPrefWidth(700);
+
+        String sensorType = "temperature";
+        String url = "jdbc:mysql://127.0.0.1:3306/pii2_NewLifeSystems";
+        String dbUser = "db_ZinBAR";
+        String dbPass = "Zineb2004";
+
+        String query = "SELECT s.sensorType AS sensorName, m.measurementValue, m.timeStamp " +
+                "FROM measurement m " +
+                "JOIN sensor s ON m.sensor_ID = s.sensor_ID " +
+                "WHERE LOWER(s.sensorType) = ?";
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection conn = DriverManager.getConnection(url, dbUser, dbPass);
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, sensorType.toLowerCase());
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                data.add(new SensorRecord(
+                        rs.getString("sensorName"),
+                        rs.getDouble("measurementValue"),
+                        rs.getTimestamp("timeStamp")
+                ));
+            }
+
+            tableView.setItems(data);
+
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return tableView;
+    }
+
     private double getTemperature() {
-        // TODO: Replace with actual implementation to get temperature data
-        // For testing, you could return different values to see different states
-        return 1; // Example value - optimal range
+        return 1; // Replace with actual sensor value if needed
     }
 
     private HBox createNavButton(String text, String iconPath, Runnable onClickAction) {
@@ -216,3 +256,4 @@ public class temperatureUI extends Application {
         return new Image(getClass().getResource(path).toExternalForm());
     }
 }
+
