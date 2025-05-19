@@ -1,6 +1,8 @@
 package com.spms.dashboard;
 
 import com.spms.login.Auth;
+import com.spms.login.DatabaseHelper;
+import com.spms.session.Session;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -119,19 +121,39 @@ public class adminUI extends Application {
         card.setPrefSize(300, 150);
         card.setStyle("-fx-background-color: #fef9e7; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);");
 
-        Label titleLabel = new Label("Light Level");
-        titleLabel.setFont(new Font("Malgun Gothic Bold", 24));
-        titleLabel.setTextFill(Color.web("#a56336"));
+        Label titleLabel = new Label("Light Status");
+        titleLabel.setFont(new Font("Malgun Gothic Bold", 28));
+        titleLabel.setTextFill(Color.web("#e3b505"));
 
-        Circle statusCircle = new Circle(30);
-        statusCircle.setFill(Color.web("#28a745"));
+        int lightStatus = (int) getLight(); // Expected to return 0 or 1
 
-        Label statusLabel = new Label("OPTIMAL");
-        statusLabel.setFont(new Font("Malgun Gothic Bold", 18));
-        statusLabel.setTextFill(Color.web("#28a745"));
+        Circle circle = new Circle(30);
+        Label statusLabel = new Label();
+        statusLabel.setFont(new Font("Malgun Gothic Bold", 24));
 
-        card.getChildren().addAll(titleLabel, statusCircle, statusLabel);
+        if (lightStatus == 1) {
+            circle.setFill(Color.web("#28a745")); // Green
+            statusLabel.setText("GOOD LIGHT");
+            statusLabel.setTextFill(Color.web("#28a745"));
+        } else {
+            circle.setFill(Color.RED);
+            statusLabel.setText("NO LIGHT");
+            statusLabel.setTextFill(Color.RED);
+        }
+
+        // Indicator box for legend
+        VBox indicatorBox = new VBox(10);
+        indicatorBox.setAlignment(Pos.CENTER);
+        indicatorBox.setStyle("-fx-background-color: #f7f6f2; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10; -fx-border-color: #ccc;");
+
+        card.getChildren().addAll(titleLabel, circle, statusLabel);
         return card;
+    }
+
+    private double getLight() {
+        // ✅ Updated: get data for the current user
+        double rawLight = DatabaseHelper.getLatestLightForUser(Session.getUserId());
+        return rawLight > 0 ? 1 : 0;
     }
 
     private VBox createSoilMoistureCard() {
@@ -141,17 +163,35 @@ public class adminUI extends Application {
         card.setStyle("-fx-background-color: #fef9e7; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);");
 
         Label titleLabel = new Label("Soil Moisture");
-        titleLabel.setFont(new Font("Malgun Gothic Bold", 24));
+        titleLabel.setFont(new Font("Malgun Gothic Bold", 28));
         titleLabel.setTextFill(Color.web("#a56336"));
 
-        Circle statusCircle = new Circle(30);
-        statusCircle.setFill(Color.web("#ffcc00"));
+        // ✅ Now user-specific data
+        double moisture = DatabaseHelper.getLatestMoistureForUser(Session.getUserId());
 
-        Label statusLabel = new Label("SATISFACTORY");
-        statusLabel.setFont(new Font("Malgun Gothic Bold", 18));
-        statusLabel.setTextFill(Color.web("#ffcc00"));
+        Circle circle = new Circle(30);
+        Label statusLabel = new Label();
+        statusLabel.setFont(new Font("Malgun Gothic Bold", 20));
 
-        card.getChildren().addAll(titleLabel, statusCircle, statusLabel);
+        Color statusColor;
+        String statusText;
+
+        if ((moisture >= 0 && moisture < 30) || (moisture > 70 && moisture <= 100)) {
+            statusColor = Color.RED;
+            statusText = "SUBOPTIMAL";
+        } else if ((moisture >= 30 && moisture < 40) || (moisture > 60 && moisture <= 70)) {
+            statusColor = Color.web("#ffcc00");
+            statusText = "SATISFACTORY";
+        } else {
+            statusColor = Color.web("#28a745");
+            statusText = "OPTIMAL";
+        }
+
+        circle.setFill(statusColor);
+        statusLabel.setText(statusText);
+        statusLabel.setTextFill(statusColor);
+
+        card.getChildren().addAll(titleLabel, circle, statusLabel);
         return card;
     }
 
@@ -162,32 +202,40 @@ public class adminUI extends Application {
         card.setStyle("-fx-background-color: #fef9e7; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);");
 
         Label titleLabel = new Label("Temperature");
-        titleLabel.setFont(new Font("Malgun Gothic Bold", 24));
-        titleLabel.setTextFill(Color.web("#a56336"));
+        titleLabel.setFont(new Font("Malgun Gothic Bold", 28));
+        titleLabel.setTextFill(Color.web("#e3b505"));
 
-        ProgressBar tempBar = new ProgressBar(0.5);
-        tempBar.setPrefWidth(300);
-        tempBar.setPrefHeight(30);
-        tempBar.setStyle("-fx-accent: red;");
+        double temperature = getTemperature();
 
-        HBox tempLabels = new HBox(50);
-        tempLabels.setAlignment(Pos.CENTER);
-        Label coldLabel = new Label("COLD");
-        coldLabel.setFont(new Font("Malgun Gothic Bold", 14));
-        coldLabel.setTextFill(Color.web("#8b0000"));
+        Circle circle = new Circle(30);
+        Label statusLabel = new Label();
+        statusLabel.setFont(new Font("Malgun Gothic Bold", 20));
 
-        Label warmLabel = new Label("WARM");
-        warmLabel.setFont(new Font("Malgun Gothic Bold", 14));
-        warmLabel.setTextFill(Color.web("#ffa500"));
+        Color statusColor;
+        String statusText;
 
-        Label hotLabel = new Label("HOT");
-        hotLabel.setFont(new Font("Malgun Gothic Bold", 14));
-        hotLabel.setTextFill(Color.web("#ff4500"));
+        if ((temperature >= 0 && temperature < 15) || (temperature > 30 && temperature <= 50)) {
+            statusColor = Color.RED;
+            statusText = "SUBOPTIMAL";
+        } else if ((temperature >= 15 && temperature < 20) || (temperature >= 25 && temperature <= 30)) {
+            statusColor = Color.web("#ffcc00");
+            statusText = "SATISFACTORY";
+        } else {
+            statusColor = Color.web("#28a745");
+            statusText = "OPTIMAL";
+        }
 
-        tempLabels.getChildren().addAll(coldLabel, warmLabel, hotLabel);
+        circle.setFill(statusColor);
+        statusLabel.setText(statusText);
+        statusLabel.setTextFill(statusColor);
 
-        card.getChildren().addAll(titleLabel, tempBar, tempLabels);
+        card.getChildren().addAll(titleLabel, circle, statusLabel);
         return card;
+    }
+
+    private double getTemperature() {
+        // ✅ Now retrieves data for the logged-in user
+        return DatabaseHelper.getLatestTemperatureForUser(Session.getUserId());
     }
 
     private Button createAdminButton() {

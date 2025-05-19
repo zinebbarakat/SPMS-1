@@ -1,6 +1,8 @@
 package com.spms.dashboard;
 
 import com.spms.login.Auth;
+import com.spms.login.DatabaseHelper;
+import com.spms.session.Session;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -106,7 +108,7 @@ public class DashboardUI extends Application {
         titleLabel.setTextFill(Color.web("#a56336"));
 
         // Get light value from your data source
-        int light = getLightLevel();
+        double light = getLight();
 
         Circle circle = new Circle(20);
         Label lightLabel = new Label();
@@ -137,10 +139,10 @@ public class DashboardUI extends Application {
         return card;
     }
     // Method to get light level - implement according to your data source
-    private int getLightLevel() {
-        // TODO: Replace with actual implementation to get light sensor data
-        // For testing, return either 0 or 1
-        return 1; // Example value - optimal
+    private double getLight() {
+        // ✅ Updated: get data for the current user
+        double rawLight = DatabaseHelper.getLatestLightForUser(Session.getUserId());
+        return rawLight > 0 ? 1 : 0;
     }
 
     private VBox createSoilCard() {
@@ -154,7 +156,7 @@ public class DashboardUI extends Application {
         titleLabel.setTextFill(Color.web("#a56336"));
 
         // Get humidity value from your data source
-        double humidity = getHumidity();
+        double humidity = DatabaseHelper.getLatestMoistureForUser(Session.getUserId());
 
         Circle circle = new Circle(20);
         Label humidityLabel = new Label();
@@ -186,12 +188,6 @@ public class DashboardUI extends Application {
 
         card.getChildren().addAll(titleLabel, circle, humidityLabel, actualHumidityLabel);
         return card;
-    }
-    // Method to get humidity - implement according to your data source
-    private double getHumidity() {
-        // TODO: Replace with actual implementation to get humidity data
-        // For testing, you could return different values to see different states
-        return 77; // Example value - optimal range
     }
 
     private VBox createTemperatureCard() {
@@ -240,9 +236,7 @@ public class DashboardUI extends Application {
     }
     // Method to get temperature - implement according to your data source
     private double getTemperature() {
-        // TODO: Replace with actual implementation to get temperature data
-        // For testing, you could return different values to see different states
-        return 19; // Example value
+        return DatabaseHelper.getLatestTemperatureForUser(Session.getUserId());
     }
     private HBox createNavButton(String text, String iconPath, Runnable onClickAction) {
         HBox hBox = new HBox(10);
