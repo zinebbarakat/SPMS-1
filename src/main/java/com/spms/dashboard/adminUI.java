@@ -1,6 +1,7 @@
 package com.spms.dashboard;
 
 import com.spms.login.Auth;
+import com.spms.dashboard.SensorExportController;
 import com.spms.login.DatabaseHelper;
 import com.spms.session.Session;
 import javafx.application.Application;
@@ -108,11 +109,25 @@ public class adminUI extends Application {
 
         anchorPane.getChildren().add(borderPane);
 
+        // Add export button to the bottom of the center VBox
+        Button exportButton = new Button("Export Sensor Data");
+        exportButton.setOnAction(e -> {
+            SensorExportController controller = new SensorExportController();
+            controller.showExportDialog(primaryStage);
+        });
+
+        VBox layout = new VBox(15); // 15px spacing between elements
+        layout.setPadding(new Insets(20));
+        layout.getChildren().add(exportButton); // Add button to layout
+
         // Scene and Stage
         Scene scene = new Scene(anchorPane);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Admin Dashboard");
         primaryStage.show();
+
+
+
     }
 
     private VBox createLightLevelCard() {
