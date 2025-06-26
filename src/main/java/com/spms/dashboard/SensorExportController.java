@@ -1,6 +1,7 @@
 package com.spms.dashboard;
 
 import javafx.collections.FXCollections;
+import com.spms.login.spmsDB;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -72,21 +73,31 @@ public class SensorExportController {
     }
 
     private void exportSensorDataToCSV(File file, String sensorType, int limit) {
-        String url = "jdbc:mysql://localhost:3306/spms";
-        String user = "root";
-        String password = "";
-
-        String sql = "SELECT * FROM measurements";
+        int SensorN = 0;
+        String sql = "SELECT * FROM measurement";
         if (!sensorType.equals("All")) {
             sql += " WHERE sensor_ID = ?";
         }
         sql += " ORDER BY timeStamp DESC LIMIT ?";
 
-        try (Connection conn = DriverManager.getConnection(url, user, password);
+        try (Connection conn = spmsDB.connectToDB();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
+            if (sensorType == "Temperature") {
+                SensorN = 1;
+
+            }
+            else if (sensorType == "Light") {
+                SensorN = 3;
+            } else if (sensorType == "Soil Moisture") {
+                SensorN = 4;
+            }
+            else {
+                SensorN = 15;
+            }
+
             if (!sensorType.equals("All")) {
-                stmt.setString(1, sensorType);
+                stmt.setInt(1, SensorN);
                 stmt.setInt(2, limit);
             } else {
                 stmt.setInt(1, limit);
@@ -97,10 +108,10 @@ public class SensorExportController {
             writer.write("ID,Type,Value,Timestamp\n");
 
             while (rs.next()) {
-                writer.write(rs.getInt("id") + "," +
-                        rs.getString("type") + "," +
-                        rs.getDouble("value") + "," +
-                        rs.getTimestamp("timestamp") + "\n");
+                writer.write(rs.getInt("measurement_ID") + "," +
+                        rs.getInt("sensor_ID") + "," +
+                        rs.getDouble("measurementValue") + "," +
+                        rs.getTimestamp("timeStamp") + "\n");
             }
 
             writer.close();

@@ -81,8 +81,15 @@ public class adminUI extends Application {
         HBox rowTwo = new HBox(30);
         rowTwo.setAlignment(Pos.CENTER);
 
+
+        Button exportButton = createAdminButton();
+        exportButton.setOnAction(e -> {
+            SensorExportController controller = new SensorExportController();
+            controller.showExportDialog(primaryStage);
+        });
+
         rowOne.getChildren().addAll(createLightLevelCard(), createSoilMoistureCard());
-        rowTwo.getChildren().addAll(createTemperatureCard(), createAdminButton());
+        rowTwo.getChildren().addAll(createTemperatureCard(), exportButton);
 
         centerVBox.getChildren().addAll(rowOne, rowTwo);
 
@@ -109,16 +116,6 @@ public class adminUI extends Application {
 
         anchorPane.getChildren().add(borderPane);
 
-        // Add export button to the bottom of the center VBox
-        Button exportButton = new Button("Export Sensor Data");
-        exportButton.setOnAction(e -> {
-            SensorExportController controller = new SensorExportController();
-            controller.showExportDialog(primaryStage);
-        });
-
-        VBox layout = new VBox(15); // 15px spacing between elements
-        layout.setPadding(new Insets(20));
-        layout.getChildren().add(exportButton); // Add button to layout
 
         // Scene and Stage
         Scene scene = new Scene(anchorPane);
@@ -254,7 +251,7 @@ public class adminUI extends Application {
     }
 
     private Button createAdminButton() {
-        Button adminButton = new Button("Admin Permission");
+        Button adminButton = new Button("Export Sensor Data");
         adminButton.setFont(new Font("Malgun Gothic Bold", 18));
         adminButton.setStyle("-fx-background-color: #dda15e; -fx-text-fill: #ffffff; -fx-padding: 10; -fx-border-radius: 10; -fx-background-radius: 10;");
         adminButton.setPrefWidth(200);
